@@ -15,7 +15,7 @@ Chrome에 내장된 기능처럼 텍스트를 드래그하면 번역 버튼이 �
 
 ### 1. 저장소 다운로드
 ```bash
-git clone https://github.com/baek0203/translator_extension.git
+git clone https://github.com/baek0203/DragTranslator.git
 cd translator_extention
 ```
 
