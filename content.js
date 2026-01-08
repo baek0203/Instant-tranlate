@@ -134,18 +134,20 @@ function showPopup() {
     p.style.display = 'none';
     p.innerHTML = `
       <div class="popup-header">
-        <span>번역</span>
+        <span>${chrome.i18n.getMessage('translate')}</span>
         <button class="close-x">✕</button>
       </div>
-      <div class="popup-content" id="translated-text">번역 중...</div>
+      <div class="popup-content" id="translated-text">${chrome.i18n.getMessage('translating')}</div>
       <div class="popup-footer">
-        <button id="save-translation">저장</button>
-        <button id="go-google-web">모든 번역 보기</button>
+        <button id="save-translation">${chrome.i18n.getMessage('save')}</button>
+        <button id="go-google-web">${chrome.i18n.getMessage('viewAllTranslations')}</button>
       </div>
     `;
     p.querySelector('.close-x').onclick = hidePopup;
-    p.querySelector('#go-google-web').onclick = () => {
-      const url = `https://translate.google.com/?sl=auto&tl=ko&text=${encodeURIComponent(selectedText)}`;
+    p.querySelector('#go-google-web').onclick = async () => {
+      const settings = await chrome.storage.sync.get(['targetLanguage']);
+      const targetLang = settings.targetLanguage || 'ko';
+      const url = `https://translate.google.com/?sl=auto&tl=${targetLang}&text=${encodeURIComponent(selectedText)}`;
       window.open(url, '_blank');
     };
     p.querySelector('#save-translation').onclick = saveTranslation;
@@ -178,24 +180,28 @@ async function translate(text) {
   const el = document.getElementById('translated-text');
   if (!el) return;
 
-  el.textContent = '번역 중...';
+  el.textContent = chrome.i18n.getMessage('translating');
 
   try {
+    // 사용자 설정에서 목표 언어 가져오기
+    const settings = await chrome.storage.sync.get(['targetLanguage']);
+    const targetLang = settings.targetLanguage || 'ko';
+
     const res = await chrome.runtime.sendMessage({
       action: 'translate',
       text,
-      targetLang: 'ko'
+      targetLang: targetLang
     });
     if (res?.success) {
       translatedText = res.translatedText;
       el.textContent = translatedText;
     } else {
       translatedText = '';
-      el.textContent = '번역 실패';
+      el.textContent = chrome.i18n.getMessage('translationFailed');
     }
   } catch {
     translatedText = '';
-    el.textContent = '오류 발생';
+    el.textContent = chrome.i18n.getMessage('errorOccurred');
   }
 }
 
@@ -204,7 +210,7 @@ async function translate(text) {
 ========================= */
 async function saveTranslation() {
   if (!selectedText || !translatedText) {
-    alert('저장할 번역이 없습니다.');
+    alert(chrome.i18n.getMessage('noTranslationToSave'));
     return;
   }
 
@@ -215,7 +221,7 @@ async function saveTranslation() {
       original: selectedText,
       translated: translatedText,
       timestamp: timestamp,
-      date: new Date().toLocaleString('ko-KR')
+      date: new Date().toLocaleString()
     };
 
     // 기존 저장 데이터 가져오기
@@ -237,7 +243,7 @@ async function saveTranslation() {
     const saveBtn = document.getElementById('save-translation');
     if (saveBtn) {
       const originalText = saveBtn.textContent;
-      saveBtn.textContent = '✓ 저장됨';
+      saveBtn.textContent = chrome.i18n.getMessage('saved');
       saveBtn.disabled = true;
       setTimeout(() => {
         saveBtn.textContent = originalText;
@@ -245,8 +251,8 @@ async function saveTranslation() {
       }, 2000);
     }
   } catch (error) {
-    console.error('저장 실패:', error);
-    alert('저장에 실패했습니다.');
+    console.error('Save failed:', error);
+    alert(chrome.i18n.getMessage('saveFailed'));
   }
 }
 

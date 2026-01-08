@@ -1,10 +1,63 @@
 // 전역 상태
 let isSelectMode = false;
 let selectedIds = new Set();
+let currentUILanguage = 'en';
+let selectedLanguage = 'ko';
+let isSettingsView = false;
+
+// 지원 언어 목록
+const LANGUAGES = [
+  { code: 'ko', name: 'Korean', nativeName: '한국어' },
+  { code: 'en', name: 'English', nativeName: 'English' },
+  { code: 'ja', name: 'Japanese', nativeName: '日本語' },
+  { code: 'zh-CN', name: 'Chinese (Simplified)', nativeName: '中文(简体)' },
+  { code: 'zh-TW', name: 'Chinese (Traditional)', nativeName: '中文(繁體)' },
+  { code: 'es', name: 'Spanish', nativeName: 'Español' },
+  { code: 'fr', name: 'French', nativeName: 'Français' },
+  { code: 'de', name: 'German', nativeName: 'Deutsch' },
+  { code: 'ru', name: 'Russian', nativeName: 'Русский' },
+  { code: 'pt', name: 'Portuguese', nativeName: 'Português' },
+  { code: 'it', name: 'Italian', nativeName: 'Italiano' },
+  { code: 'ar', name: 'Arabic', nativeName: 'العربية' },
+  { code: 'hi', name: 'Hindi', nativeName: 'हिन्दी' },
+  { code: 'th', name: 'Thai', nativeName: 'ไทย' },
+  { code: 'vi', name: 'Vietnamese', nativeName: 'Tiếng Việt' },
+  { code: 'id', name: 'Indonesian', nativeName: 'Bahasa Indonesia' }
+];
+
+// i18n.js에서 가져온 함수들을 사용하기 위해 스크립트 로드 확인
+function waitForI18n() {
+  return new Promise((resolve) => {
+    if (typeof getUILanguage !== 'undefined') {
+      resolve();
+    } else {
+      setTimeout(() => waitForI18n().then(resolve), 50);
+    }
+  });
+}
+
+// i18n 메시지 로드
+async function loadI18nMessages() {
+  // 저장된 UI 언어 가져오기
+  const result = await chrome.storage.sync.get(['uiLanguage', 'targetLanguage']);
+  const uiLang = result.uiLanguage || result.targetLanguage || 'en';
+  currentUILanguage = uiLang;
+
+  const translations = getUILanguage(uiLang);
+
+  document.querySelectorAll('[data-i18n]').forEach(element => {
+    const key = element.getAttribute('data-i18n');
+    const message = translations[key];
+    if (message) {
+      element.textContent = message;
+    }
+  });
+}
 
 // 번역 기록 로드
 async function loadTranslations() {
   const container = document.getElementById('container');
+  const uiTexts = getUILanguage(currentUILanguage);
 
   try {
     const result = await chrome.storage.local.get(['translations']);
@@ -16,7 +69,7 @@ async function loadTranslations() {
           <svg viewBox="0 0 24 24" fill="currentColor">
             <path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/>
           </svg>
-          <p>저장된 번역 기록이 없습니다</p>
+          <p>${uiTexts.noTranslationsStored}</p>
         </div>
       `;
       return;
@@ -29,8 +82,8 @@ async function loadTranslations() {
           <div class="item-header">
             <span class="item-date">${item.date}</span>
             <div class="item-actions">
-              <button class="item-btn copy-btn" data-text="${escapeHtml(item.translated)}">복사</button>
-              <button class="item-btn delete delete-btn" data-id="${item.id}">삭제</button>
+              <button class="item-btn copy-btn" data-text="${escapeHtml(item.translated)}">${uiTexts.copy}</button>
+              <button class="item-btn delete delete-btn" data-id="${item.id}">${uiTexts.delete}</button>
             </div>
           </div>
           <div class="item-content">
@@ -43,7 +96,7 @@ async function loadTranslations() {
               <div class="text-content original collapsed">${escapeHtml(item.original)}</div>
             </div>
             <div class="text-section translated-section" style="display: none;">
-              <div class="text-label">번역</div>
+              <div class="text-label">${uiTexts.translation}</div>
               <div class="text-content translated">${escapeHtml(item.translated)}</div>
             </div>
           </div>
@@ -102,8 +155,9 @@ async function loadTranslations() {
     });
 
   } catch (error) {
-    console.error('번역 기록 로드 실패:', error);
-    container.innerHTML = '<div class="empty-state"><p>데이터 로드 중 오류가 발생했습니다</p></div>';
+    console.error('Failed to load translations:', error);
+    const uiTexts = getUILanguage(currentUILanguage);
+    container.innerHTML = `<div class="empty-state"><p>${uiTexts.dataLoadError || 'Error loading data'}</p></div>`;
   }
 }
 
@@ -116,22 +170,24 @@ function escapeHtml(text) {
 
 // 클립보드에 복사
 async function copyToClipboard(text, button) {
+  const uiTexts = getUILanguage(currentUILanguage);
   try {
     await navigator.clipboard.writeText(text);
     const originalText = button.textContent;
-    button.textContent = '✓ 복사됨';
+    button.textContent = uiTexts.copied;
     setTimeout(() => {
       button.textContent = originalText;
     }, 1500);
   } catch (error) {
-    console.error('복사 실패:', error);
-    alert('복사에 실패했습니다.');
+    console.error('Copy failed:', error);
+    alert(uiTexts.copyFailed || 'Failed to copy');
   }
 }
 
 // 개별 항목 삭제
 async function deleteTranslation(id) {
-  if (!confirm('이 번역 기록을 삭제하시겠습니까?')) {
+  const uiTexts = getUILanguage(currentUILanguage);
+  if (!confirm(uiTexts.confirmDelete || 'Delete this translation?')) {
     return;
   }
 
@@ -143,14 +199,15 @@ async function deleteTranslation(id) {
     await chrome.storage.local.set({ translations: filtered });
     loadTranslations();
   } catch (error) {
-    console.error('삭제 실패:', error);
-    alert('삭제에 실패했습니다.');
+    console.error('Delete failed:', error);
+    alert(uiTexts.deleteFailed || 'Failed to delete');
   }
 }
 
 // 전체 삭제
 async function clearAllTranslations() {
-  if (!confirm('모든 번역 기록을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.')) {
+  const uiTexts = getUILanguage(currentUILanguage);
+  if (!confirm(uiTexts.confirmDeleteAll || 'Delete all translations?')) {
     return;
   }
 
@@ -158,19 +215,20 @@ async function clearAllTranslations() {
     await chrome.storage.local.set({ translations: [] });
     loadTranslations();
   } catch (error) {
-    console.error('전체 삭제 실패:', error);
-    alert('삭제에 실패했습니다.');
+    console.error('Delete all failed:', error);
+    alert(uiTexts.deleteFailed || 'Failed to delete');
   }
 }
 
 // JSON 내보내기
 async function exportTranslations() {
+  const uiTexts = getUILanguage(currentUILanguage);
   try {
     const result = await chrome.storage.local.get(['translations']);
     const translations = result.translations || [];
 
     if (translations.length === 0) {
-      alert('내보낼 번역 기록이 없습니다.');
+      alert(uiTexts.noExportData || 'No data to export');
       return;
     }
 
@@ -185,13 +243,14 @@ async function exportTranslations() {
 
     URL.revokeObjectURL(url);
   } catch (error) {
-    console.error('내보내기 실패:', error);
-    alert('내보내기에 실패했습니다.');
+    console.error('Export failed:', error);
+    alert(uiTexts.exportFailed || 'Failed to export');
   }
 }
 
 // 선택 모드 토글
 function toggleSelectMode() {
+  const uiTexts = getUILanguage(currentUILanguage);
   const container = document.getElementById('container');
   const header = document.querySelector('.header');
   const selectModeBtn = document.getElementById('select-mode-btn');
@@ -202,11 +261,11 @@ function toggleSelectMode() {
   if (isSelectMode) {
     container.classList.add('select-mode');
     header.classList.add('select-mode-active');
-    selectModeBtn.textContent = '취소';
+    selectModeBtn.textContent = uiTexts.cancel;
   } else {
     container.classList.remove('select-mode');
     header.classList.remove('select-mode-active');
-    selectModeBtn.textContent = '선택';
+    selectModeBtn.textContent = uiTexts.select;
 
     // 모든 체크박스 해제
     document.querySelectorAll('.select-checkbox').forEach(cb => {
@@ -219,12 +278,15 @@ function toggleSelectMode() {
 
 // 액션 바 업데이트
 function updateActionBar() {
+  const uiTexts = getUILanguage(currentUILanguage);
   const actionBar = document.getElementById('action-bar');
   const selectedCount = document.getElementById('selected-count');
 
   if (isSelectMode && selectedIds.size > 0) {
     actionBar.classList.remove('hidden');
-    selectedCount.textContent = `${selectedIds.size}개 선택`;
+    selectedCount.textContent = uiTexts.selectedCount ?
+      uiTexts.selectedCount.replace('$COUNT$', selectedIds.size.toString()) :
+      `${selectedIds.size} selected`;
   } else {
     actionBar.classList.add('hidden');
   }
@@ -264,7 +326,7 @@ async function toggleSelectAll() {
 async function deleteSelected() {
   if (selectedIds.size === 0) return;
 
-  if (!confirm(`선택한 ${selectedIds.size}개의 번역 기록을 삭제하시겠습니까?`)) {
+  if (!confirm(chrome.i18n.getMessage('confirmDeleteSelected', [selectedIds.size.toString()]))) {
     return;
   }
 
@@ -279,46 +341,140 @@ async function deleteSelected() {
     loadTranslations();
     updateActionBar();
   } catch (error) {
-    console.error('선택 삭제 실패:', error);
-    alert('삭제에 실패했습니다.');
+    console.error('Delete selected failed:', error);
+    alert(chrome.i18n.getMessage('deleteFailed'));
   }
 }
 
-// 메뉴 토글
-function toggleMenu() {
-  const menuDropdown = document.getElementById('menu-dropdown');
-  menuDropdown.classList.toggle('hidden');
+// 설정 화면 표시/숨김
+function toggleSettings() {
+  const container = document.getElementById('container');
+  const settingsView = document.getElementById('settings-view');
+  const actionBar = document.getElementById('action-bar');
+  const header = document.querySelector('.header h1');
+  const uiTexts = getUILanguage(currentUILanguage);
+
+  isSettingsView = !isSettingsView;
+
+  if (isSettingsView) {
+    // 설정 화면 표시
+    container.classList.add('hidden');
+    actionBar.classList.add('hidden');
+    settingsView.classList.remove('hidden');
+    header.textContent = uiTexts.settings || 'Settings';
+
+    // 언어 그리드 생성
+    createLanguageGrid();
+    loadSettingsData();
+  } else {
+    // 번역 기록 화면 표시
+    settingsView.classList.add('hidden');
+    container.classList.remove('hidden');
+    header.textContent = uiTexts.translationHistory || 'Translation History';
+
+    // 번역 기록 다시 로드 (UI 언어가 변경되었을 수 있음)
+    loadTranslations();
+  }
 }
 
-// 메뉴 외부 클릭 시 닫기
-function closeMenu() {
-  const menuDropdown = document.getElementById('menu-dropdown');
-  menuDropdown.classList.add('hidden');
-}
+// 언어 그리드 생성
+function createLanguageGrid() {
+  const grid = document.getElementById('language-grid');
+  grid.innerHTML = '';
 
-// 문의하기
-function openContactForm() {
-  chrome.tabs.create({
-    url: 'https://forms.gle/EzyJPL7aD3wKY8X49'
+  LANGUAGES.forEach(lang => {
+    const option = document.createElement('div');
+    option.className = 'language-option';
+    option.dataset.lang = lang.code;
+
+    option.innerHTML = `
+      <input type="radio" name="language" value="${lang.code}" id="lang-${lang.code}">
+      <label class="language-label" for="lang-${lang.code}">
+        ${lang.nativeName}
+        <div class="language-code">${lang.code}</div>
+      </label>
+    `;
+
+    option.addEventListener('click', () => {
+      selectLanguage(lang.code);
+    });
+
+    grid.appendChild(option);
   });
-  closeMenu();
 }
 
-// 정보 모달 열기
-function openInfoModal() {
-  const modal = document.getElementById('info-modal');
-  modal.classList.remove('hidden');
-  closeMenu();
+// 언어 선택
+function selectLanguage(langCode) {
+  selectedLanguage = langCode;
+
+  // UI 언어도 함께 변경
+  currentUILanguage = langCode;
+  loadI18nMessages();
+
+  // 모든 옵션에서 selected 클래스 제거
+  document.querySelectorAll('.language-option').forEach(opt => {
+    opt.classList.remove('selected');
+  });
+
+  // 선택된 옵션에 selected 클래스 추가
+  const selectedOption = document.querySelector(`[data-lang="${langCode}"]`);
+  if (selectedOption) {
+    selectedOption.classList.add('selected');
+    selectedOption.querySelector('input').checked = true;
+  }
 }
 
-// 정보 모달 닫기
-function closeInfoModal() {
-  const modal = document.getElementById('info-modal');
-  modal.classList.add('hidden');
+// 설정 데이터 로드
+async function loadSettingsData() {
+  try {
+    const result = await chrome.storage.sync.get(['targetLanguage', 'uiLanguage']);
+    const targetLang = result.targetLanguage || 'ko';
+    selectedLanguage = targetLang;
+    selectLanguage(targetLang);
+  } catch (error) {
+    console.error('Failed to load settings:', error);
+  }
+}
+
+// 설정 저장
+async function saveSettings() {
+  try {
+    await chrome.storage.sync.set({
+      targetLanguage: selectedLanguage,
+      uiLanguage: selectedLanguage
+    });
+    showStatusMessage();
+
+    // 설정 저장 후 번역 기록 화면으로 돌아가기
+    setTimeout(() => {
+      toggleSettings();
+    }, 1500);
+  } catch (error) {
+    console.error('Failed to save settings:', error);
+    const uiTexts = getUILanguage(currentUILanguage);
+    alert(uiTexts.saveFailed || 'Failed to save settings');
+  }
+}
+
+// 기본값으로 리셋
+async function resetToDefault() {
+  selectLanguage('ko');
+  await saveSettings();
+}
+
+// 상태 메시지 표시
+function showStatusMessage() {
+  const message = document.getElementById('status-message');
+  message.classList.add('show');
+
+  setTimeout(() => {
+    message.classList.remove('show');
+  }, 2000);
 }
 
 // 이벤트 리스너
 document.addEventListener('DOMContentLoaded', () => {
+  loadI18nMessages();
   loadTranslations();
 
   document.getElementById('select-mode-btn').addEventListener('click', toggleSelectMode);
@@ -328,19 +484,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('delete-selected-btn').addEventListener('click', deleteSelected);
   document.getElementById('cancel-select-btn').addEventListener('click', toggleSelectMode);
 
-  // 메뉴 관련
-  document.getElementById('menu-btn').addEventListener('click', (e) => {
-    e.stopPropagation();
-    toggleMenu();
-  });
-
-  document.getElementById('contact-btn').addEventListener('click', openContactForm);
-  document.getElementById('info-btn').addEventListener('click', openInfoModal);
-  document.getElementById('close-info-btn').addEventListener('click', closeInfoModal);
-
-  // 모달 배경 클릭 시 닫기
-  document.querySelector('.modal-backdrop')?.addEventListener('click', closeInfoModal);
-
-  // 문서 클릭 시 메뉴 닫기
-  document.addEventListener('click', closeMenu);
+  // 설정 버튼
+  document.getElementById('settings-btn').addEventListener('click', openSettings);
 });
