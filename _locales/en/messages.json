@@ -1,0 +1,198 @@
+{
+  "extName": {
+    "message": "Text Translator",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "Translation button appears when you drag text",
+    "description": "Extension description"
+  },
+  "extTitle": {
+    "message": "View Translation History",
+    "description": "Extension action title"
+  },
+  "translate": {
+    "message": "Translate",
+    "description": "Translate label"
+  },
+  "translating": {
+    "message": "Translating...",
+    "description": "Translating status"
+  },
+  "translationFailed": {
+    "message": "Translation Failed",
+    "description": "Translation failed message"
+  },
+  "errorOccurred": {
+    "message": "Error Occurred",
+    "description": "Error occurred message"
+  },
+  "save": {
+    "message": "Save",
+    "description": "Save button"
+  },
+  "saved": {
+    "message": "✓ Saved",
+    "description": "Saved status"
+  },
+  "viewAllTranslations": {
+    "message": "View All Translations",
+    "description": "View all translations button"
+  },
+  "noTranslationToSave": {
+    "message": "No translation to save.",
+    "description": "No translation to save alert"
+  },
+  "saveFailed": {
+    "message": "Failed to save.",
+    "description": "Save failed alert"
+  },
+  "translationHistory": {
+    "message": "Translation History",
+    "description": "Translation history header"
+  },
+  "select": {
+    "message": "Select",
+    "description": "Select button"
+  },
+  "cancel": {
+    "message": "Cancel",
+    "description": "Cancel button"
+  },
+  "selectAll": {
+    "message": "Select All",
+    "description": "Select all button"
+  },
+  "deleteAll": {
+    "message": "Delete All",
+    "description": "Delete all button"
+  },
+  "export": {
+    "message": "Export",
+    "description": "Export button"
+  },
+  "noTranslationsStored": {
+    "message": "No translations stored",
+    "description": "No translations stored message"
+  },
+  "copy": {
+    "message": "Copy",
+    "description": "Copy button"
+  },
+  "copied": {
+    "message": "✓ Copied",
+    "description": "Copied status"
+  },
+  "delete": {
+    "message": "Delete",
+    "description": "Delete button"
+  },
+  "confirmDelete": {
+    "message": "Are you sure you want to delete this translation?",
+    "description": "Confirm delete message"
+  },
+  "confirmDeleteAll": {
+    "message": "Are you sure you want to delete all translations?\nThis action cannot be undone.",
+    "description": "Confirm delete all message"
+  },
+  "confirmDeleteSelected": {
+    "message": "Are you sure you want to delete $COUNT$ selected translations?",
+    "description": "Confirm delete selected message",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "deleteFailed": {
+    "message": "Failed to delete.",
+    "description": "Delete failed alert"
+  },
+  "copyFailed": {
+    "message": "Failed to copy.",
+    "description": "Copy failed alert"
+  },
+  "dataLoadError": {
+    "message": "An error occurred while loading data",
+    "description": "Data load error message"
+  },
+  "selectedCount": {
+    "message": "$COUNT$ selected",
+    "description": "Selected count label",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "contactUs": {
+    "message": "Report an Issue",
+    "description": "Contact us menu item"
+  },
+  "info": {
+    "message": "Info / Version",
+    "description": "Info menu item"
+  },
+  "version": {
+    "message": "Version:",
+    "description": "Version label"
+  },
+  "name": {
+    "message": "Name:",
+    "description": "Name label"
+  },
+  "description": {
+    "message": "Description:",
+    "description": "Description label"
+  },
+  "close": {
+    "message": "Close",
+    "description": "Close button"
+  },
+  "noExportData": {
+    "message": "No translations to export.",
+    "description": "No export data alert"
+  },
+  "exportFailed": {
+    "message": "Failed to export.",
+    "description": "Export failed alert"
+  },
+  "translation": {
+    "message": "Translation",
+    "description": "Translation label"
+  },
+  "settings": {
+    "message": "Settings",
+    "description": "Settings title"
+  },
+  "settingsDescription": {
+    "message": "Configure default translation language and other options",
+    "description": "Settings description"
+  },
+  "translationLanguage": {
+    "message": "Translation Target Language",
+    "description": "Translation language section title"
+  },
+  "translationLanguageDescription": {
+    "message": "Select the default language to translate text into",
+    "description": "Translation language description"
+  },
+  "saveSettings": {
+    "message": "Save",
+    "description": "Save settings button"
+  },
+  "resetToDefault": {
+    "message": "Reset to Default",
+    "description": "Reset to default button"
+  },
+  "settingsSaved": {
+    "message": "✓ Settings Saved",
+    "description": "Settings saved message"
+  },
+  "viewTranslationHistory": {
+    "message": "View Translation History",
+    "description": "View translation history link"
+  }
+}

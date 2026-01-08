@@ -1,0 +1,198 @@
+{
+  "extName": {
+    "message": "文本翻译器",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "拖动文本时会出现翻译按钮的扩展程序",
+    "description": "Extension description"
+  },
+  "extTitle": {
+    "message": "查看翻译历史",
+    "description": "Extension action title"
+  },
+  "translate": {
+    "message": "翻译",
+    "description": "Translate label"
+  },
+  "translating": {
+    "message": "翻译中...",
+    "description": "Translating status"
+  },
+  "translationFailed": {
+    "message": "翻译失败",
+    "description": "Translation failed message"
+  },
+  "errorOccurred": {
+    "message": "发生错误",
+    "description": "Error occurred message"
+  },
+  "save": {
+    "message": "保存",
+    "description": "Save button"
+  },
+  "saved": {
+    "message": "✓ 已保存",
+    "description": "Saved status"
+  },
+  "viewAllTranslations": {
+    "message": "查看所有翻译",
+    "description": "View all translations button"
+  },
+  "noTranslationToSave": {
+    "message": "没有要保存的翻译。",
+    "description": "No translation to save alert"
+  },
+  "saveFailed": {
+    "message": "保存失败。",
+    "description": "Save failed alert"
+  },
+  "translationHistory": {
+    "message": "翻译历史",
+    "description": "Translation history header"
+  },
+  "select": {
+    "message": "选择",
+    "description": "Select button"
+  },
+  "cancel": {
+    "message": "取消",
+    "description": "Cancel button"
+  },
+  "selectAll": {
+    "message": "全选",
+    "description": "Select all button"
+  },
+  "deleteAll": {
+    "message": "全部删除",
+    "description": "Delete all button"
+  },
+  "export": {
+    "message": "导出",
+    "description": "Export button"
+  },
+  "noTranslationsStored": {
+    "message": "没有保存的翻译历史",
+    "description": "No translations stored message"
+  },
+  "copy": {
+    "message": "复制",
+    "description": "Copy button"
+  },
+  "copied": {
+    "message": "✓ 已复制",
+    "description": "Copied status"
+  },
+  "delete": {
+    "message": "删除",
+    "description": "Delete button"
+  },
+  "confirmDelete": {
+    "message": "确定要删除此翻译记录吗？",
+    "description": "Confirm delete message"
+  },
+  "confirmDeleteAll": {
+    "message": "确定要删除所有翻译记录吗？\n此操作无法撤销。",
+    "description": "Confirm delete all message"
+  },
+  "confirmDeleteSelected": {
+    "message": "确定要删除选中的$COUNT$条翻译记录吗？",
+    "description": "Confirm delete selected message",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "deleteFailed": {
+    "message": "删除失败。",
+    "description": "Delete failed alert"
+  },
+  "copyFailed": {
+    "message": "复制失败。",
+    "description": "Copy failed alert"
+  },
+  "dataLoadError": {
+    "message": "加载数据时发生错误",
+    "description": "Data load error message"
+  },
+  "selectedCount": {
+    "message": "已选择$COUNT$项",
+    "description": "Selected count label",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "contactUs": {
+    "message": "报告问题",
+    "description": "Contact us menu item"
+  },
+  "info": {
+    "message": "信息 / 版本",
+    "description": "Info menu item"
+  },
+  "version": {
+    "message": "版本：",
+    "description": "Version label"
+  },
+  "name": {
+    "message": "名称：",
+    "description": "Name label"
+  },
+  "description": {
+    "message": "描述：",
+    "description": "Description label"
+  },
+  "close": {
+    "message": "关闭",
+    "description": "Close button"
+  },
+  "noExportData": {
+    "message": "没有要导出的翻译记录。",
+    "description": "No export data alert"
+  },
+  "exportFailed": {
+    "message": "导出失败。",
+    "description": "Export failed alert"
+  },
+  "translation": {
+    "message": "翻译",
+    "description": "Translation label"
+  },
+  "settings": {
+    "message": "设置",
+    "description": "Settings title"
+  },
+  "settingsDescription": {
+    "message": "配置默认翻译语言和其他选项",
+    "description": "Settings description"
+  },
+  "translationLanguage": {
+    "message": "翻译目标语言",
+    "description": "Translation language section title"
+  },
+  "translationLanguageDescription": {
+    "message": "选择文本翻译的默认语言",
+    "description": "Translation language description"
+  },
+  "saveSettings": {
+    "message": "保存",
+    "description": "Save settings button"
+  },
+  "resetToDefault": {
+    "message": "重置为默认",
+    "description": "Reset to default button"
+  },
+  "settingsSaved": {
+    "message": "✓ 设置已保存",
+    "description": "Settings saved message"
+  },
+  "viewTranslationHistory": {
+    "message": "查看翻译历史",
+    "description": "View translation history link"
+  }
+}

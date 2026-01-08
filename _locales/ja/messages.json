@@ -1,0 +1,198 @@
+{
+  "extName": {
+    "message": "テキスト翻訳",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "テキストをドラッグすると翻訳ボタンが表示される拡張機能",
+    "description": "Extension description"
+  },
+  "extTitle": {
+    "message": "翻訳履歴を見る",
+    "description": "Extension action title"
+  },
+  "translate": {
+    "message": "翻訳",
+    "description": "Translate label"
+  },
+  "translating": {
+    "message": "翻訳中...",
+    "description": "Translating status"
+  },
+  "translationFailed": {
+    "message": "翻訳失敗",
+    "description": "Translation failed message"
+  },
+  "errorOccurred": {
+    "message": "エラーが発生しました",
+    "description": "Error occurred message"
+  },
+  "save": {
+    "message": "保存",
+    "description": "Save button"
+  },
+  "saved": {
+    "message": "✓ 保存済み",
+    "description": "Saved status"
+  },
+  "viewAllTranslations": {
+    "message": "すべての翻訳を見る",
+    "description": "View all translations button"
+  },
+  "noTranslationToSave": {
+    "message": "保存する翻訳がありません。",
+    "description": "No translation to save alert"
+  },
+  "saveFailed": {
+    "message": "保存に失敗しました。",
+    "description": "Save failed alert"
+  },
+  "translationHistory": {
+    "message": "翻訳履歴",
+    "description": "Translation history header"
+  },
+  "select": {
+    "message": "選択",
+    "description": "Select button"
+  },
+  "cancel": {
+    "message": "キャンセル",
+    "description": "Cancel button"
+  },
+  "selectAll": {
+    "message": "すべて選択",
+    "description": "Select all button"
+  },
+  "deleteAll": {
+    "message": "すべて削除",
+    "description": "Delete all button"
+  },
+  "export": {
+    "message": "エクスポート",
+    "description": "Export button"
+  },
+  "noTranslationsStored": {
+    "message": "保存された翻訳履歴がありません",
+    "description": "No translations stored message"
+  },
+  "copy": {
+    "message": "コピー",
+    "description": "Copy button"
+  },
+  "copied": {
+    "message": "✓ コピー済み",
+    "description": "Copied status"
+  },
+  "delete": {
+    "message": "削除",
+    "description": "Delete button"
+  },
+  "confirmDelete": {
+    "message": "この翻訳履歴を削除しますか？",
+    "description": "Confirm delete message"
+  },
+  "confirmDeleteAll": {
+    "message": "すべての翻訳履歴を削除しますか？\nこの操作は元に戻せません。",
+    "description": "Confirm delete all message"
+  },
+  "confirmDeleteSelected": {
+    "message": "選択した$COUNT$件の翻訳履歴を削除しますか？",
+    "description": "Confirm delete selected message",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "deleteFailed": {
+    "message": "削除に失敗しました。",
+    "description": "Delete failed alert"
+  },
+  "copyFailed": {
+    "message": "コピーに失敗しました。",
+    "description": "Copy failed alert"
+  },
+  "dataLoadError": {
+    "message": "データの読み込み中にエラーが発生しました",
+    "description": "Data load error message"
+  },
+  "selectedCount": {
+    "message": "$COUNT$件選択",
+    "description": "Selected count label",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "contactUs": {
+    "message": "問題を報告",
+    "description": "Contact us menu item"
+  },
+  "info": {
+    "message": "情報 / バージョン",
+    "description": "Info menu item"
+  },
+  "version": {
+    "message": "バージョン:",
+    "description": "Version label"
+  },
+  "name": {
+    "message": "名前:",
+    "description": "Name label"
+  },
+  "description": {
+    "message": "説明:",
+    "description": "Description label"
+  },
+  "close": {
+    "message": "閉じる",
+    "description": "Close button"
+  },
+  "noExportData": {
+    "message": "エクスポートする翻訳履歴がありません。",
+    "description": "No export data alert"
+  },
+  "exportFailed": {
+    "message": "エクスポートに失敗しました。",
+    "description": "Export failed alert"
+  },
+  "translation": {
+    "message": "翻訳",
+    "description": "Translation label"
+  },
+  "settings": {
+    "message": "設定",
+    "description": "Settings title"
+  },
+  "settingsDescription": {
+    "message": "デフォルトの翻訳言語とその他のオプションを設定します",
+    "description": "Settings description"
+  },
+  "translationLanguage": {
+    "message": "翻訳先言語",
+    "description": "Translation language section title"
+  },
+  "translationLanguageDescription": {
+    "message": "テキストを翻訳するデフォルトの言語を選択してください",
+    "description": "Translation language description"
+  },
+  "saveSettings": {
+    "message": "保存",
+    "description": "Save settings button"
+  },
+  "resetToDefault": {
+    "message": "デフォルトに戻す",
+    "description": "Reset to default button"
+  },
+  "settingsSaved": {
+    "message": "✓ 設定を保存しました",
+    "description": "Settings saved message"
+  },
+  "viewTranslationHistory": {
+    "message": "翻訳履歴を見る",
+    "description": "View translation history link"
+  }
+}

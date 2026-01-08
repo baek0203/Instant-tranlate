@@ -36,7 +36,7 @@
   position: absolute;
   z-index: 10001;
 
-  width: 360px;
+  width: 420px;
   max-width: calc(100vw - 16px);
 
   background: #202124;
@@ -65,12 +65,12 @@
 
 /* header */
 .popup-header {
-  padding: 10px 14px;
+  padding: 12px 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 
-  font-size: 13px;
+  font-size: 15px;
   color: #bdc1c6;
 
   border-bottom: 1px solid #3c4043;
@@ -78,27 +78,30 @@
 
 /* content */
 .popup-content {
-  padding: 16px 18px;
-  font-size: 15px;
+  padding: 18px 20px;
+  font-size: 20px;
   line-height: 1.6;
   word-break: break-word;
+  min-height: 60px;
 }
 
 /* footer */
 .popup-footer {
-  padding: 10px 14px;
+  padding: 14px 16px;
   border-top: 1px solid #3c4043;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
 }
 
 #save-translation {
   background: none;
   border: none;
   color: #8ab4f8;
-  font-size: 13px;
+  font-size: 16px;
   cursor: pointer;
+  padding: 6px 10px;
 }
 
 #save-translation:hover {
@@ -115,8 +118,10 @@
   background: none;
   border: none;
   color: #8ab4f8;
-  font-size: 13px;
+  font-size: 16px;
   cursor: pointer;
+  padding: 6px 10px;
+  white-space: nowrap;
 }
 
 #go-google-web:hover {
@@ -128,8 +133,10 @@
   background: none;
   border: none;
   color: #bdc1c6;
-  font-size: 18px;
+  font-size: 22px;
   cursor: pointer;
+  padding: 0;
+  line-height: 1;
 }
 
 .close-x:hover {

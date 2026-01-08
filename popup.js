@@ -472,6 +472,41 @@ function showStatusMessage() {
   }, 2000);
 }
 
+// 설정 메뉴 토글
+function toggleSettingsMenu() {
+  const menuDropdown = document.getElementById('settings-dropdown');
+  menuDropdown.classList.toggle('hidden');
+}
+
+// 설정 메뉴 닫기
+function closeSettingsMenu() {
+  const menuDropdown = document.getElementById('settings-dropdown');
+  if (menuDropdown) {
+    menuDropdown.classList.add('hidden');
+  }
+}
+
+// 문의하기
+function openContactForm() {
+  chrome.tabs.create({
+    url: 'https://forms.gle/EzyJPL7aD3wKY8X49'
+  });
+  closeSettingsMenu();
+}
+
+// 정보 모달 열기
+function openInfoModal() {
+  const modal = document.getElementById('info-modal');
+  modal.classList.remove('hidden');
+  closeSettingsMenu();
+}
+
+// 정보 모달 닫기
+function closeInfoModal() {
+  const modal = document.getElementById('info-modal');
+  modal.classList.add('hidden');
+}
+
 // 이벤트 리스너
 document.addEventListener('DOMContentLoaded', () => {
   loadI18nMessages();
@@ -484,6 +519,32 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('delete-selected-btn').addEventListener('click', deleteSelected);
   document.getElementById('cancel-select-btn').addEventListener('click', toggleSelectMode);
 
-  // 설정 버튼
-  document.getElementById('settings-btn').addEventListener('click', openSettings);
+  // 설정 메뉴 버튼
+  document.getElementById('settings-menu-btn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleSettingsMenu();
+  });
+
+  // 설정 메뉴 항목들
+  document.getElementById('language-settings-btn').addEventListener('click', () => {
+    closeSettingsMenu();
+    toggleSettings();
+  });
+
+  document.getElementById('contact-btn').addEventListener('click', openContactForm);
+  document.getElementById('info-btn').addEventListener('click', openInfoModal);
+  document.getElementById('close-info-btn').addEventListener('click', closeInfoModal);
+
+  // 설정 화면 버튼들
+  document.getElementById('save-btn').addEventListener('click', saveSettings);
+  document.getElementById('reset-btn').addEventListener('click', resetToDefault);
+
+  // 모달 배경 클릭 시 닫기
+  const infoBackdrop = document.querySelector('#info-modal .modal-backdrop');
+  if (infoBackdrop) {
+    infoBackdrop.addEventListener('click', closeInfoModal);
+  }
+
+  // 문서 클릭 시 메뉴 닫기
+  document.addEventListener('click', closeSettingsMenu);
 });

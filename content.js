@@ -7,6 +7,7 @@ let dragStartX = 0;
 let dragEndX = 0;
 
 let hideButtonTimer = null;
+let currentUILanguage = 'en';
 
 /* =========================
    버튼 생성
@@ -127,20 +128,25 @@ function hideButton() {
 /* =========================
    팝업
 ========================= */
-function showPopup() {
+async function showPopup() {
+  // UI 언어 가져오기
+  const settings = await chrome.storage.sync.get(['uiLanguage', 'targetLanguage']);
+  currentUILanguage = settings.uiLanguage || settings.targetLanguage || 'en';
+  const uiTexts = getUILanguage(currentUILanguage);
+
   if (!translationPopup) {
     const p = document.createElement('div');
     p.className = 'translator-popup';
     p.style.display = 'none';
     p.innerHTML = `
       <div class="popup-header">
-        <span>${chrome.i18n.getMessage('translate')}</span>
+        <span id="popup-title">${uiTexts.translation}</span>
         <button class="close-x">✕</button>
       </div>
-      <div class="popup-content" id="translated-text">${chrome.i18n.getMessage('translating')}</div>
+      <div class="popup-content" id="translated-text">${uiTexts.translating}</div>
       <div class="popup-footer">
-        <button id="save-translation">${chrome.i18n.getMessage('save')}</button>
-        <button id="go-google-web">${chrome.i18n.getMessage('viewAllTranslations')}</button>
+        <button id="save-translation">${uiTexts.save}</button>
+        <button id="go-google-web">${uiTexts.viewAllTranslations}</button>
       </div>
     `;
     p.querySelector('.close-x').onclick = hidePopup;
@@ -154,6 +160,17 @@ function showPopup() {
 
     document.body.appendChild(p);
     translationPopup = p;
+  } else {
+    // 팝업이 이미 있으면 텍스트만 업데이트
+    const popupTitle = translationPopup.querySelector('#popup-title');
+    const saveBtn = translationPopup.querySelector('#save-translation');
+    const viewAllBtn = translationPopup.querySelector('#go-google-web');
+    const translatingText = translationPopup.querySelector('#translated-text');
+
+    if (popupTitle) popupTitle.textContent = uiTexts.translation;
+    if (saveBtn) saveBtn.textContent = uiTexts.save;
+    if (viewAllBtn) viewAllBtn.textContent = uiTexts.viewAllTranslations;
+    if (translatingText) translatingText.textContent = uiTexts.translating;
   }
 
   // 선택된 텍스트 전체 영역 가져오기
@@ -180,7 +197,8 @@ async function translate(text) {
   const el = document.getElementById('translated-text');
   if (!el) return;
 
-  el.textContent = chrome.i18n.getMessage('translating');
+  const uiTexts = getUILanguage(currentUILanguage);
+  el.textContent = uiTexts.translating;
 
   try {
     // 사용자 설정에서 목표 언어 가져오기

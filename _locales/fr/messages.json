@@ -1,0 +1,198 @@
+{
+  "extName": {
+    "message": "Traducteur de Texte",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "Un bouton de traduction apparaît lorsque vous sélectionnez du texte",
+    "description": "Extension description"
+  },
+  "extTitle": {
+    "message": "Voir l'Historique des Traductions",
+    "description": "Extension action title"
+  },
+  "translate": {
+    "message": "Traduire",
+    "description": "Translate label"
+  },
+  "translating": {
+    "message": "Traduction en cours...",
+    "description": "Translating status"
+  },
+  "translationFailed": {
+    "message": "Échec de la Traduction",
+    "description": "Translation failed message"
+  },
+  "errorOccurred": {
+    "message": "Une Erreur s'est Produite",
+    "description": "Error occurred message"
+  },
+  "save": {
+    "message": "Enregistrer",
+    "description": "Save button"
+  },
+  "saved": {
+    "message": "✓ Enregistré",
+    "description": "Saved status"
+  },
+  "viewAllTranslations": {
+    "message": "Voir Toutes les Traductions",
+    "description": "View all translations button"
+  },
+  "noTranslationToSave": {
+    "message": "Aucune traduction à enregistrer.",
+    "description": "No translation to save alert"
+  },
+  "saveFailed": {
+    "message": "Échec de l'enregistrement.",
+    "description": "Save failed alert"
+  },
+  "translationHistory": {
+    "message": "Historique des Traductions",
+    "description": "Translation history header"
+  },
+  "select": {
+    "message": "Sélectionner",
+    "description": "Select button"
+  },
+  "cancel": {
+    "message": "Annuler",
+    "description": "Cancel button"
+  },
+  "selectAll": {
+    "message": "Tout Sélectionner",
+    "description": "Select all button"
+  },
+  "deleteAll": {
+    "message": "Tout Supprimer",
+    "description": "Delete all button"
+  },
+  "export": {
+    "message": "Exporter",
+    "description": "Export button"
+  },
+  "noTranslationsStored": {
+    "message": "Aucune traduction enregistrée",
+    "description": "No translations stored message"
+  },
+  "copy": {
+    "message": "Copier",
+    "description": "Copy button"
+  },
+  "copied": {
+    "message": "✓ Copié",
+    "description": "Copied status"
+  },
+  "delete": {
+    "message": "Supprimer",
+    "description": "Delete button"
+  },
+  "confirmDelete": {
+    "message": "Êtes-vous sûr de vouloir supprimer cette traduction ?",
+    "description": "Confirm delete message"
+  },
+  "confirmDeleteAll": {
+    "message": "Êtes-vous sûr de vouloir supprimer toutes les traductions ?\nCette action ne peut pas être annulée.",
+    "description": "Confirm delete all message"
+  },
+  "confirmDeleteSelected": {
+    "message": "Êtes-vous sûr de vouloir supprimer $COUNT$ traductions sélectionnées ?",
+    "description": "Confirm delete selected message",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "deleteFailed": {
+    "message": "Échec de la suppression.",
+    "description": "Delete failed alert"
+  },
+  "copyFailed": {
+    "message": "Échec de la copie.",
+    "description": "Copy failed alert"
+  },
+  "dataLoadError": {
+    "message": "Une erreur s'est produite lors du chargement des données",
+    "description": "Data load error message"
+  },
+  "selectedCount": {
+    "message": "$COUNT$ sélectionné",
+    "description": "Selected count label",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "contactUs": {
+    "message": "Signaler un Problème",
+    "description": "Contact us menu item"
+  },
+  "info": {
+    "message": "Informations / Version",
+    "description": "Info menu item"
+  },
+  "version": {
+    "message": "Version :",
+    "description": "Version label"
+  },
+  "name": {
+    "message": "Nom :",
+    "description": "Name label"
+  },
+  "description": {
+    "message": "Description :",
+    "description": "Description label"
+  },
+  "close": {
+    "message": "Fermer",
+    "description": "Close button"
+  },
+  "noExportData": {
+    "message": "Aucune traduction à exporter.",
+    "description": "No export data alert"
+  },
+  "exportFailed": {
+    "message": "Échec de l'exportation.",
+    "description": "Export failed alert"
+  },
+  "translation": {
+    "message": "Traduction",
+    "description": "Translation label"
+  },
+  "settings": {
+    "message": "Paramètres",
+    "description": "Settings title"
+  },
+  "settingsDescription": {
+    "message": "Configurer la langue de traduction par défaut et d'autres options",
+    "description": "Settings description"
+  },
+  "translationLanguage": {
+    "message": "Langue de Traduction",
+    "description": "Translation language section title"
+  },
+  "translationLanguageDescription": {
+    "message": "Sélectionnez la langue par défaut pour traduire le texte",
+    "description": "Translation language description"
+  },
+  "saveSettings": {
+    "message": "Enregistrer",
+    "description": "Save settings button"
+  },
+  "resetToDefault": {
+    "message": "Réinitialiser par Défaut",
+    "description": "Reset to default button"
+  },
+  "settingsSaved": {
+    "message": "✓ Paramètres Enregistrés",
+    "description": "Settings saved message"
+  },
+  "viewTranslationHistory": {
+    "message": "Voir l'Historique des Traductions",
+    "description": "View translation history link"
+  }
+}

@@ -577,6 +577,82 @@
       opacity: 1;
       transform: translateY(0);
     }
+
+    /* Modal */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.hidden {
+      display: none;
+    }
+
+    .modal-backdrop {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+    }
+
+    .modal-content {
+      position: relative;
+      background: #2d2d2d;
+      border: 1px solid #3c4043;
+      border-radius: 8px;
+      padding: 20px;
+      min-width: 300px;
+      max-width: 400px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      z-index: 2001;
+    }
+
+    .modal-content h3 {
+      margin: 0 0 16px 0;
+      font-size: 16px;
+      color: #e8eaed;
+      font-weight: 500;
+    }
+
+    .info-section {
+      margin-bottom: 16px;
+    }
+
+    .info-section p {
+      margin: 8px 0;
+      font-size: 13px;
+      color: #bdc1c6;
+      line-height: 1.5;
+    }
+
+    .info-section strong {
+      color: #e8eaed;
+    }
+
+    .modal-btn {
+      width: 100%;
+      padding: 8px;
+      background: #3c4043;
+      border: none;
+      border-radius: 4px;
+      color: #e8eaed;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .modal-btn:hover {
+      background: #5f6368;
+    }
   </style>
 </head>
 <body>
@@ -588,7 +664,14 @@
       <button class="header-btn danger select-mode-only hidden" id="clear-btn" data-i18n="deleteAll"></button>
       <button class="header-btn normal-mode-only" id="export-btn" data-i18n="export"></button>
 
-      <button class="header-btn" id="settings-btn" title="Settings">⚙️</button>
+      <div class="menu-wrapper">
+        <button class="header-btn" id="settings-menu-btn" title="Settings">⚙️</button>
+        <div id="settings-dropdown" class="menu-dropdown hidden">
+          <div class="menu-item" id="language-settings-btn" data-i18n="settings"></div>
+          <div class="menu-item" id="contact-btn" data-i18n="contactUs"></div>
+          <div class="menu-item" id="info-btn" data-i18n="info"></div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -622,6 +705,19 @@
 
     <div class="status-message" id="status-message">
       <span data-i18n="settingsSaved"></span>
+    </div>
+  </div>
+
+  <div id="info-modal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <h3 data-i18n="info"></h3>
+      <div class="info-section">
+        <p><strong data-i18n="version"></strong> <span>1.4.0</span></p>
+        <p><strong data-i18n="name"></strong> <span>DragTranslator</span></p>
+        <p><strong data-i18n="description"></strong> <span data-i18n="settingsDescription"></span></p>
+      </div>
+      <button class="modal-btn" id="close-info-btn" data-i18n="close"></button>
     </div>
   </div>
 

@@ -1,0 +1,198 @@
+{
+  "extName": {
+    "message": "DragTranslator",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "텍스트를 드래그하면 번역 버튼이 나타나는 확장 프로그램",
+    "description": "Extension description"
+  },
+  "extTitle": {
+    "message": "번역 기록 보기",
+    "description": "Extension action title"
+  },
+  "translate": {
+    "message": "번역",
+    "description": "Translate label"
+  },
+  "translating": {
+    "message": "번역 중...",
+    "description": "Translating status"
+  },
+  "translationFailed": {
+    "message": "번역 실패",
+    "description": "Translation failed message"
+  },
+  "errorOccurred": {
+    "message": "오류 발생",
+    "description": "Error occurred message"
+  },
+  "save": {
+    "message": "저장",
+    "description": "Save button"
+  },
+  "saved": {
+    "message": "✓ 저장됨",
+    "description": "Saved status"
+  },
+  "viewAllTranslations": {
+    "message": "모든 번역 보기",
+    "description": "View all translations button"
+  },
+  "noTranslationToSave": {
+    "message": "저장할 번역이 없습니다.",
+    "description": "No translation to save alert"
+  },
+  "saveFailed": {
+    "message": "저장에 실패했습니다.",
+    "description": "Save failed alert"
+  },
+  "translationHistory": {
+    "message": "번역 기록",
+    "description": "Translation history header"
+  },
+  "select": {
+    "message": "선택",
+    "description": "Select button"
+  },
+  "cancel": {
+    "message": "취소",
+    "description": "Cancel button"
+  },
+  "selectAll": {
+    "message": "전체선택",
+    "description": "Select all button"
+  },
+  "deleteAll": {
+    "message": "전체삭제",
+    "description": "Delete all button"
+  },
+  "export": {
+    "message": "내보내기",
+    "description": "Export button"
+  },
+  "noTranslationsStored": {
+    "message": "저장된 번역 기록이 없습니다",
+    "description": "No translations stored message"
+  },
+  "copy": {
+    "message": "복사",
+    "description": "Copy button"
+  },
+  "copied": {
+    "message": "✓ 복사됨",
+    "description": "Copied status"
+  },
+  "delete": {
+    "message": "삭제",
+    "description": "Delete button"
+  },
+  "confirmDelete": {
+    "message": "이 번역 기록을 삭제하시겠습니까?",
+    "description": "Confirm delete message"
+  },
+  "confirmDeleteAll": {
+    "message": "모든 번역 기록을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.",
+    "description": "Confirm delete all message"
+  },
+  "confirmDeleteSelected": {
+    "message": "선택한 $COUNT$개의 번역 기록을 삭제하시겠습니까?",
+    "description": "Confirm delete selected message",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "deleteFailed": {
+    "message": "삭제에 실패했습니다.",
+    "description": "Delete failed alert"
+  },
+  "copyFailed": {
+    "message": "복사에 실패했습니다.",
+    "description": "Copy failed alert"
+  },
+  "dataLoadError": {
+    "message": "데이터 로드 중 오류가 발생했습니다",
+    "description": "Data load error message"
+  },
+  "selectedCount": {
+    "message": "$COUNT$개 선택",
+    "description": "Selected count label",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "contactUs": {
+    "message": "불편한 점을 알려주세요",
+    "description": "Contact us menu item"
+  },
+  "info": {
+    "message": "정보 / 버전",
+    "description": "Info menu item"
+  },
+  "version": {
+    "message": "버전:",
+    "description": "Version label"
+  },
+  "name": {
+    "message": "이름:",
+    "description": "Name label"
+  },
+  "description": {
+    "message": "설명:",
+    "description": "Description label"
+  },
+  "close": {
+    "message": "닫기",
+    "description": "Close button"
+  },
+  "noExportData": {
+    "message": "내보낼 번역 기록이 없습니다.",
+    "description": "No export data alert"
+  },
+  "exportFailed": {
+    "message": "내보내기에 실패했습니다.",
+    "description": "Export failed alert"
+  },
+  "translation": {
+    "message": "번역",
+    "description": "Translation label"
+  },
+  "settings": {
+    "message": "설정",
+    "description": "Settings title"
+  },
+  "settingsDescription": {
+    "message": "번역 기본 언어와 기타 옵션을 설정하세요",
+    "description": "Settings description"
+  },
+  "translationLanguage": {
+    "message": "번역 대상 언어",
+    "description": "Translation language section title"
+  },
+  "translationLanguageDescription": {
+    "message": "텍스트를 번역할 기본 언어를 선택하세요",
+    "description": "Translation language description"
+  },
+  "saveSettings": {
+    "message": "저장",
+    "description": "Save settings button"
+  },
+  "resetToDefault": {
+    "message": "기본값으로 재설정",
+    "description": "Reset to default button"
+  },
+  "settingsSaved": {
+    "message": "✓ 설정이 저장되었습니다",
+    "description": "Settings saved message"
+  },
+  "viewTranslationHistory": {
+    "message": "번역 기록 보기",
+    "description": "View translation history link"
+  }
+}
