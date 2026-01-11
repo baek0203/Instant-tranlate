@@ -1,3 +1,10 @@
+// 이미 초기화되었는지 확인
+if (window.__translatorInitialized) {
+  console.log('Translator already initialized, skipping...');
+} else {
+  window.__translatorInitialized = true;
+  console.log('Initializing translator...');
+
 let translateButton = null;
 let translationPopup = null;
 let selectedText = '';
@@ -20,7 +27,6 @@ function getButton() {
   btn.style.display = 'none';
   btn.innerHTML = `
     <svg viewBox="0 0 24 24" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-      <rect width="24" height="24" fill="#FFFFFF" rx="4"/>
       <path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94
         2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17
         C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19
@@ -41,7 +47,9 @@ function getButton() {
     e.stopPropagation();
     if (!selectedText) return;
 
-    showPopup();
+    await showPopup();
+    // 팝업이 DOM에 추가될 때까지 짧은 대기
+    await new Promise(resolve => setTimeout(resolve, 50));
     await translate(selectedText);
     hideButton();
   };
@@ -129,10 +137,23 @@ function hideButton() {
    팝업
 ========================= */
 async function showPopup() {
-  // UI 언어 가져오기
-  const settings = await chrome.storage.sync.get(['uiLanguage', 'targetLanguage']);
-  currentUILanguage = settings.uiLanguage || settings.targetLanguage || 'en';
-  const uiTexts = getUILanguage(currentUILanguage);
+  let uiTexts;
+
+  try {
+    // chrome.runtime이 유효한지 확인
+    if (!chrome.runtime || !chrome.runtime.id) {
+      console.error('Extension context invalidated');
+      return;
+    }
+
+    // UI 언어 가져오기
+    const settings = await chrome.storage.sync.get(['uiLanguage', 'targetLanguage']);
+    currentUILanguage = settings.uiLanguage || settings.targetLanguage || 'en';
+    uiTexts = getUILanguage(currentUILanguage);
+  } catch (error) {
+    console.error('Error in showPopup:', error);
+    return;
+  }
 
   if (!translationPopup) {
     const p = document.createElement('div');
@@ -184,6 +205,9 @@ async function showPopup() {
   translationPopup.style.left = `${rect.left + window.scrollX}px`;
   translationPopup.style.top = `${rect.bottom + window.scrollY + 10}px`;
   translationPopup.style.display = 'block';
+
+  console.log('Popup displayed successfully');
+  console.log('translated-text element:', document.getElementById('translated-text'));
 }
 
 function hidePopup() {
@@ -194,20 +218,41 @@ function hidePopup() {
    번역
 ========================= */
 async function translate(text) {
-  const el = document.getElementById('translated-text');
-  if (!el) return;
+  console.log('Starting translation for:', text.substring(0, 50));
+
+  // translationPopup이 존재하는지 확인
+  if (!translationPopup) {
+    console.error('Translation popup not found');
+    return;
+  }
+
+  // 팝업 내부의 요소를 직접 쿼리
+  const el = translationPopup.querySelector('#translated-text');
+  if (!el) {
+    console.error('Translation element not found in popup');
+    console.log('Popup HTML:', translationPopup.innerHTML);
+    return;
+  }
+
+  console.log('Translation element found:', el);
 
   const uiTexts = getUILanguage(currentUILanguage);
   el.textContent = uiTexts.translating;
 
   try {
+    // chrome.runtime이 유효한지 확인
+    if (!chrome.runtime || !chrome.runtime.id) {
+      throw new Error('Extension context invalidated');
+    }
+
     // 사용자 설정에서 목표 언어 가져오기
     const settings = await chrome.storage.sync.get(['targetLanguage']);
     const targetLang = settings.targetLanguage || 'ko';
+    console.log('Target language:', targetLang);
 
-    // 타임아웃 추가 (10초)
+    // 타임아웃 추가 (15초)
     const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => reject(new Error('Translation timeout')), 10000);
+      setTimeout(() => reject(new Error('Translation timeout')), 15000);
     });
 
     const translationPromise = chrome.runtime.sendMessage({
@@ -216,22 +261,33 @@ async function translate(text) {
       targetLang: targetLang
     });
 
+    console.log('Message sent to background, waiting for response...');
     const res = await Promise.race([translationPromise, timeoutPromise]);
+    console.log('Translation response:', res);
 
     if (res?.success) {
       translatedText = res.translatedText;
+      console.log('Setting translated text:', translatedText);
       el.textContent = translatedText;
+      console.log('Translation successful, element updated:', el.textContent);
     } else {
       translatedText = '';
+      const errorMsg = res?.error || 'Unknown error';
+      console.error('Translation failed:', errorMsg);
       el.textContent = uiTexts.translationFailed || chrome.i18n.getMessage('translationFailed') || 'Translation failed';
     }
   } catch (error) {
     console.error('Translation error:', error);
     translatedText = '';
-    const errorMsg = error.message === 'Translation timeout'
-      ? (uiTexts.translationTimeout || 'Translation timeout. Please try again.')
-      : (uiTexts.errorOccurred || chrome.i18n.getMessage('errorOccurred') || 'An error occurred');
-    el.textContent = errorMsg;
+
+    // Extension context invalidated 에러 처리
+    if (error.message && error.message.includes('Extension context invalidated')) {
+      el.textContent = 'Please reload the page (F5)';
+    } else if (error.message === 'Translation timeout') {
+      el.textContent = uiTexts.translationTimeout || 'Translation timeout. Please try again.';
+    } else {
+      el.textContent = uiTexts.errorOccurred || chrome.i18n.getMessage('errorOccurred') || 'An error occurred';
+    }
   }
 }
 
@@ -245,6 +301,11 @@ async function saveTranslation() {
   }
 
   try {
+    // chrome.runtime이 유효한지 확인
+    if (!chrome.runtime || !chrome.runtime.id) {
+      alert('Extension context invalidated. Please reload the page (F5)');
+      return;
+    }
     const timestamp = new Date().toISOString();
     const newEntry = {
       id: Date.now(),
@@ -396,3 +457,5 @@ document.addEventListener('scroll', () => {
   translateButton.style.left = `${x}px`;
   translateButton.style.top = `${y}px`;
 }, true);
+
+} // end of if (!window.__translatorInitialized)

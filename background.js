@@ -1,38 +1,70 @@
-// Google Translate API를 사용한 번역 함수
-async function translateText(text, targetLang, sourceLang = 'auto') {
-  try {
-    // Google Translate API 무료 엔드포인트 사용
-    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
+async function translateText(text, targetLang, sourceLang = 'auto', retryCount = 2) {
+  for (let attempt = 1; attempt <= retryCount; attempt++) {
+    try {
+      // Google Translate API 무료 엔드포인트 사용
+      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
 
-    const response = await fetch(url);
+      console.log(`Translation attempt ${attempt} for text: ${text.substring(0, 50)}...`);
 
-    if (!response.ok) {
-      throw new Error('Translation request failed');
-    }
+      // 5초 타임아웃
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
 
-    const data = await response.json();
-
-    // 번역된 텍스트 추출
-    let translatedText = '';
-    if (data && data[0]) {
-      data[0].forEach(item => {
-        if (item[0]) {
-          translatedText += item[0];
+      const response = await fetch(url, {
+        signal: controller.signal,
+        method: 'GET',
+        headers: {
+          'User-Agent': 'Mozilla/5.0'
         }
       });
-    }
+      clearTimeout(timeoutId);
 
-    return {
-      success: true,
-      translatedText: translatedText,
-      detectedLanguage: data[2] || sourceLang
-    };
-  } catch (error) {
-    console.error('Translation error:', error);
-    return {
-      success: false,
-      error: error.message
-    };
+      console.log(`Response status: ${response.status}`);
+
+      if (!response.ok) {
+        throw new Error(`Translation request failed with status ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('Translation data received:', data);
+
+      // 번역된 텍스트 추출
+      let translatedText = '';
+      if (data && data[0]) {
+        data[0].forEach(item => {
+          if (item[0]) {
+            translatedText += item[0];
+          }
+        });
+      }
+
+      if (!translatedText) {
+        throw new Error('Empty translation result');
+      }
+
+      // 성공하면 바로 반환
+      console.log(`Translation successful: ${translatedText}`);
+      return {
+        success: true,
+        translatedText: translatedText,
+        detectedLanguage: data[2] || sourceLang
+      };
+    } catch (error) {
+      console.error(`Translation attempt ${attempt} failed:`, error);
+
+      // 마지막 시도가 아니면 재시도
+      if (attempt < retryCount) {
+        await new Promise(resolve => setTimeout(resolve, 300)); // 0.3초 대기
+        continue;
+      }
+
+      // 마지막 시도도 실패하면 에러 반환
+      console.error('All translation attempts failed');
+      return {
+        success: false,
+        error: error.message || 'Translation failed'
+      };
+    }
   }
 }
 
@@ -132,38 +164,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     const targetLang = convertLanguageCode(request.targetLang);
     const sourceLang = request.sourceLang || 'auto';
 
-    // 번역 시도 (Google Translate -> MyMemory -> LibreTranslate 순서)
+    // Google Translate API로 번역
     (async () => {
       try {
-        // Google Translate 시도
-        let result = await translateText(request.text, targetLang, sourceLang);
-
-        if (result.success) {
-          sendResponse(result);
-          return;
-        }
-
-        // Google 실패 시 MyMemory 시도
-        result = await translateWithMyMemory(request.text, targetLang, sourceLang);
-
-        if (result.success) {
-          sendResponse(result);
-          return;
-        }
-
-        // MyMemory 실패 시 LibreTranslate 시도
-        result = await translateWithLibre(request.text, targetLang, sourceLang);
-
-        if (result.success) {
-          sendResponse(result);
-          return;
-        }
-
-        // 모든 방법 실패
-        sendResponse({
-          success: false,
-          error: 'All translation services failed'
-        });
+        const result = await translateText(request.text, targetLang, sourceLang);
+        sendResponse(result);
       } catch (error) {
         console.error('Translation error:', error);
         sendResponse({
@@ -197,8 +202,43 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 });
 
+// 모든 탭에 content script 주입하는 헬퍼 함수
+async function injectContentScriptToAllTabs() {
+  try {
+    const tabs = await chrome.tabs.query({});
+
+    for (const tab of tabs) {
+      // chrome:// 같은 특수 페이지는 제외
+      if (!tab.url || tab.url.startsWith('chrome://') || tab.url.startsWith('chrome-extension://')) {
+        continue;
+      }
+
+      try {
+        // content script 주입
+        await chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          files: ['i18n.js', 'content.js']
+        });
+
+        // CSS 주입
+        await chrome.scripting.insertCSS({
+          target: { tabId: tab.id },
+          files: ['styles.css']
+        });
+
+        console.log(`Content script injected to tab ${tab.id}`);
+      } catch (error) {
+        // 일부 탭은 권한이 없어서 실패할 수 있음 (무시)
+        console.log(`Failed to inject to tab ${tab.id}:`, error.message);
+      }
+    }
+  } catch (error) {
+    console.error('Failed to inject content scripts:', error);
+  }
+}
+
 // 확장 프로그램 설치/업데이트 시
-chrome.runtime.onInstalled.addListener((details) => {
+chrome.runtime.onInstalled.addListener(async (details) => {
   if (details.reason === 'install') {
     console.log('텍스트 번역기가 설치되었습니다.');
 
@@ -208,7 +248,14 @@ chrome.runtime.onInstalled.addListener((details) => {
       autoDetect: true,
       showAllTranslations: false
     });
+
+    // 이미 열려있는 모든 탭에 content script 주입
+    await injectContentScriptToAllTabs();
   } else if (details.reason === 'update') {
     console.log('텍스트 번역기가 업데이트되었습니다.');
+
+    // 업데이트 시에도 모든 탭에 재주입
+    await injectContentScriptToAllTabs();
   }
 });
+
