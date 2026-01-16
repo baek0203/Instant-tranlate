@@ -63,14 +63,37 @@ cd DragTranslator
 ```
 DragTranslator/
 ├── manifest.json        # 확장 프로그램 설정
-├── content.js           # 텍스트 선택 감지 및 번역 팝업 UI
-├── background.js        # 번역 API 핸들러
-├── styles.css           # 번역 팝업 UI 스타일
 ├── popup.html           # 번역 기록 및 설정 페이지
-├── popup.js             # 번역 기록 및 설정 로직
-├── i18n.js              # 커스텀 다국어 지원 시스템
 ├── settings.html        # 언어 설정 페이지
-├── settings.js          # 언어 설정 로직
+├── src/styles.css       # 번역 팝업 UI 스타일
+├── src/shared/i18n.js   # 커스텀 다국어 지원 시스템
+├── src/                 # 기능별 모듈
+│   ├── background.js    # 번역 API 핸들러
+│   ├── content.js       # 텍스트 선택 감지 및 번역 팝업 UI
+│   ├── config.js        # 공용 설정 상수
+│   ├── modules/
+│   │   └── storage.js   # 콘텐츠 스크립트 저장소 유틸
+│   ├── ui/
+│   │   ├── button.js    # 번역 버튼 UI
+│   │   └── popup.js     # 번역 팝업 UI
+│   ├── shared/
+│   │   ├── language-grid.js   # 언어 선택 그리드 렌더러
+│   │   ├── settings-store.js  # 설정 저장소 유틸
+│   │   └── translation-store.js # 번역 기록 저장소 유틸
+│   ├── popup/
+│   │   ├── popup.css    # 팝업 UI 스타일
+│   │   ├── state.js     # 팝업 상태
+│   │   ├── i18n.js      # 팝업 i18n 처리
+│   │   ├── history.js   # 번역 기록 UI
+│   │   ├── settings-view.js # 팝업 내 설정 화면
+│   │   ├── menu.js      # 팝업 메뉴/모달
+│   │   └── init.js      # 팝업 초기화
+│   └── settings/
+│       ├── settings.css # 설정 UI 스타일
+│       ├── state.js     # 설정 상태
+│       ├── i18n.js      # 설정 i18n 처리
+│       ├── view.js      # 설정 화면 로직
+│       └── init.js      # 설정 초기화
 ├── icons/               # 확장 프로그램 아이콘
 │   ├── icon16.png       # 16x16 PNG
 │   ├── icon48.png       # 48x48 PNG
@@ -149,7 +172,7 @@ DragTranslator/
 - 외 8개 언어 더 지원
 
 ### 스타일 수정
-[styles.css](styles.css)에서 번역 팝업의 색상, 크기, 폰트 등을 커스터마이징할 수 있습니다.
+[src/styles.css](src/styles.css)에서 번역 팝업의 색상, 크기, 폰트 등을 커스터마이징할 수 있습니다.
 
 ## 문제 해결
 
@@ -278,14 +301,37 @@ Menu displayed when clicking the gear icon:
 ```
 DragTranslator/
 ├── manifest.json        # Extension configuration
-├── content.js           # Text selection detection and translation popup UI
-├── background.js        # Translation API handler
-├── styles.css           # Translation popup UI styles
 ├── popup.html           # Translation history and settings page
-├── popup.js             # Translation history and settings logic
-├── i18n.js              # Custom internationalization system
 ├── settings.html        # Language settings page
-├── settings.js          # Language settings logic
+├── src/styles.css       # Translation popup UI styles
+├── src/shared/i18n.js   # Custom internationalization system
+├── src/                 # Feature modules
+│   ├── background.js    # Translation API handler
+│   ├── content.js       # Text selection detection and translation popup UI
+│   ├── config.js        # Shared configuration constants
+│   ├── modules/
+│   │   └── storage.js   # Content script storage utilities
+│   ├── ui/
+│   │   ├── button.js    # Translation button UI
+│   │   └── popup.js     # Translation popup UI
+│   ├── shared/
+│   │   ├── language-grid.js   # Language picker renderer
+│   │   ├── settings-store.js  # Settings storage utilities
+│   │   └── translation-store.js # Translation history storage utilities
+│   ├── popup/
+│   │   ├── popup.css    # Popup UI styles
+│   │   ├── state.js     # Popup state
+│   │   ├── i18n.js      # Popup i18n helpers
+│   │   ├── history.js   # Translation history UI
+│   │   ├── settings-view.js # Popup settings view
+│   │   ├── menu.js      # Popup menu/modal
+│   │   └── init.js      # Popup bootstrap
+│   └── settings/
+│       ├── settings.css # Settings UI styles
+│       ├── state.js     # Settings state
+│       ├── i18n.js      # Settings i18n helpers
+│       ├── view.js      # Settings view logic
+│       └── init.js      # Settings bootstrap
 ├── icons/               # Extension icons
 │   ├── icon16.png       # 16x16 PNG
 │   ├── icon48.png       # 48x48 PNG
@@ -376,7 +422,7 @@ Supported language codes:
 - Plus 8 more languages
 
 ### Style Modification
-You can customize translation popup colors, size, fonts, etc. in [styles.css](styles.css).
+You can customize translation popup colors, size, fonts, etc. in [src/styles.css](src/styles.css).
 
 ## Troubleshooting
 

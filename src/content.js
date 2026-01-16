@@ -307,10 +307,15 @@ async function saveTranslation() {
       return;
     }
     const timestamp = new Date().toISOString();
+    const selectionInfo = getSelectionInfo();
     const newEntry = {
       id: Date.now(),
       original: selectedText,
       translated: translatedText,
+      pageUrl: window.location.href,
+      pageTitle: document.title,
+      selectionStart: selectionInfo?.startIndex ?? null,
+      selectionLength: selectionInfo?.length ?? null,
       timestamp: timestamp,
       date: new Date().toLocaleString()
     };
@@ -457,5 +462,177 @@ document.addEventListener('scroll', () => {
   translateButton.style.left = `${x}px`;
   translateButton.style.top = `${y}px`;
 }, true);
+
+function getTextNodes(root) {
+  const nodes = [];
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  let node;
+  while ((node = walker.nextNode())) {
+    if (node.nodeValue) {
+      nodes.push(node);
+    }
+  }
+  return nodes;
+}
+
+function getSelectionInfo() {
+  const sel = window.getSelection();
+  if (!sel || sel.rangeCount === 0) return null;
+
+  const range = sel.getRangeAt(0);
+  const nodes = getTextNodes(document.body);
+  let index = 0;
+
+  for (const node of nodes) {
+    if (node === range.startContainer) {
+      index += range.startOffset;
+      return {
+        startIndex: index,
+        length: range.toString().length
+      };
+    }
+    index += node.nodeValue.length;
+  }
+
+  return null;
+}
+
+function createRangeFromTextIndex(startIndex, length) {
+  const nodes = getTextNodes(document.body);
+  let index = 0;
+  let startNode = null;
+  let startOffset = 0;
+  let endNode = null;
+  let endOffset = 0;
+  const endIndex = startIndex + length;
+
+  for (const node of nodes) {
+    const nodeLength = node.nodeValue.length;
+    if (!startNode && startIndex <= index + nodeLength) {
+      startNode = node;
+      startOffset = Math.max(0, startIndex - index);
+    }
+    if (startNode && endIndex <= index + nodeLength) {
+      endNode = node;
+      endOffset = Math.max(0, endIndex - index);
+      break;
+    }
+    index += nodeLength;
+  }
+
+  if (!startNode) return null;
+  if (!endNode) {
+    endNode = startNode;
+    endOffset = Math.min(startNode.nodeValue.length, startOffset);
+  }
+
+  const range = document.createRange();
+  range.setStart(startNode, startOffset);
+  range.setEnd(endNode, endOffset);
+  return range;
+}
+
+function removeHighlight(highlight) {
+  if (!highlight || !highlight.parentNode) return;
+  const parent = highlight.parentNode;
+  while (highlight.firstChild) {
+    parent.insertBefore(highlight.firstChild, highlight);
+  }
+  parent.removeChild(highlight);
+  parent.normalize();
+}
+
+function applyHighlightStyles(el) {
+  el.className = '__dt-highlight';
+  el.setAttribute('data-dt-highlight', 'true');
+  el.style.setProperty('background-color', '#ffb347', 'important');
+  el.style.setProperty('color', '#1f1f1f', 'important');
+  el.style.setProperty('padding', '0 2px', 'important');
+  el.style.setProperty('border-radius', '2px', 'important');
+  el.style.setProperty('box-shadow', '0 0 0 1px rgba(0,0,0,0.08)', 'important');
+  el.style.setProperty('display', 'inline', 'important');
+}
+
+function addTemporaryHighlight(range) {
+  if (!range) return false;
+  try {
+    const highlight = document.createElement('span');
+    applyHighlightStyles(highlight);
+
+    try {
+      range.surroundContents(highlight);
+    } catch (error) {
+      const contents = range.extractContents();
+      highlight.appendChild(contents);
+      range.insertNode(highlight);
+    }
+    highlight.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setTimeout(() => removeHighlight(highlight), 4000);
+    return true;
+  } catch (error) {
+    console.warn('Failed to highlight range:', error);
+    const parent = range.startContainer.parentElement;
+    if (parent) {
+      parent.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return true;
+    }
+  }
+  return false;
+}
+
+function highlightRange(range) {
+  return addTemporaryHighlight(range);
+}
+
+function getDeepLinkId() {
+  const hash = window.location.hash || '';
+  if (!hash.includes('dt-id=')) return null;
+  const params = new URLSearchParams(hash.replace(/^#/, ''));
+  return params.get('dt-id');
+}
+
+function findAndHighlightText(text) {
+  if (!text) return false;
+
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  let node;
+  while ((node = walker.nextNode())) {
+    const index = node.nodeValue.indexOf(text);
+    if (index !== -1) {
+      const range = document.createRange();
+      range.setStart(node, index);
+      range.setEnd(node, index + text.length);
+
+      return addTemporaryHighlight(range);
+    }
+  }
+
+  return false;
+}
+
+async function scrollToSavedTranslation() {
+  const entryId = getDeepLinkId();
+  if (!entryId) return;
+
+  try {
+    const result = await chrome.storage.local.get(['translations']);
+    const translations = result.translations || [];
+    const entry = translations.find(item => item.id.toString() === entryId);
+    if (!entry || !entry.original) return;
+
+    if (entry.selectionStart !== null && entry.selectionLength !== null) {
+      const range = createRangeFromTextIndex(entry.selectionStart, entry.selectionLength);
+      if (highlightRange(range)) {
+        return;
+      }
+    }
+
+    findAndHighlightText(entry.original);
+  } catch (error) {
+    console.error('Failed to load translation for deep link:', error);
+  }
+}
+
+scrollToSavedTranslation();
 
 } // end of if (!window.__translatorInitialized)

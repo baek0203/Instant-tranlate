@@ -205,6 +205,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 // 모든 탭에 content script 주입하는 헬퍼 함수
 async function injectContentScriptToAllTabs() {
   try {
+    if (!chrome.scripting) {
+      console.warn('[DragTranslator] chrome.scripting API is unavailable; skipping injection.');
+      return;
+    }
+
     const tabs = await chrome.tabs.query({});
 
     for (const tab of tabs) {
@@ -217,13 +222,13 @@ async function injectContentScriptToAllTabs() {
         // content script 주입
         await chrome.scripting.executeScript({
           target: { tabId: tab.id },
-          files: ['i18n.js', 'content.js']
+          files: ['src/shared/i18n.js', 'src/content.js']
         });
 
         // CSS 주입
         await chrome.scripting.insertCSS({
           target: { tabId: tab.id },
-          files: ['styles.css']
+          files: ['src/styles.css']
         });
 
         console.log(`Content script injected to tab ${tab.id}`);
@@ -258,4 +263,3 @@ chrome.runtime.onInstalled.addListener(async (details) => {
     await injectContentScriptToAllTabs();
   }
 });
-

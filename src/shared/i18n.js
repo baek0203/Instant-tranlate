@@ -1,3 +1,7 @@
+var __dtRoot = globalThis;
+if (!__dtRoot.__dtI18nLoaded) {
+  __dtRoot.__dtI18nLoaded = true;
+
 // UI 언어 번역 데이터
 const UI_TRANSLATIONS = {
   ko: {
@@ -357,3 +361,34 @@ function getMessage(key, langCode) {
   const translations = getUILanguage(langCode);
   return translations[key] || key;
 }
+
+// 지원 언어 목록
+const LANGUAGES = [
+  { code: 'ko', name: 'Korean', nativeName: '한국어' },
+  { code: 'en', name: 'English', nativeName: 'English' },
+  { code: 'ja', name: 'Japanese', nativeName: '日本語' },
+  { code: 'zh-CN', name: 'Chinese (Simplified)', nativeName: '中文(简体)' },
+  { code: 'zh-TW', name: 'Chinese (Traditional)', nativeName: '中文(繁體)' },
+  { code: 'es', name: 'Spanish', nativeName: 'Español' },
+  { code: 'fr', name: 'French', nativeName: 'Français' },
+  { code: 'de', name: 'German', nativeName: 'Deutsch' },
+  { code: 'ru', name: 'Russian', nativeName: 'Русский' },
+  { code: 'pt', name: 'Portuguese', nativeName: 'Português' },
+  { code: 'it', name: 'Italian', nativeName: 'Italiano' },
+  { code: 'ar', name: 'Arabic', nativeName: 'العربية' },
+  { code: 'hi', name: 'Hindi', nativeName: 'हिन्दी' },
+  { code: 'th', name: 'Thai', nativeName: 'ไทย' },
+  { code: 'vi', name: 'Vietnamese', nativeName: 'Tiếng Việt' },
+  { code: 'id', name: 'Indonesian', nativeName: 'Bahasa Indonesia' }
+];
+
+
+  __dtRoot.getUILanguage = getUILanguage;
+  __dtRoot.getMessage = getMessage;
+  __dtRoot.LANGUAGES = LANGUAGES;
+}
+
+// Ensure global bindings exist for legacy scripts.
+var getUILanguage = __dtRoot.getUILanguage;
+var getMessage = __dtRoot.getMessage;
+var LANGUAGES = __dtRoot.LANGUAGES;

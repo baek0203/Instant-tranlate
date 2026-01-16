@@ -142,3 +142,11 @@
 .close-x:hover {
   color: #ffffff;
 }
+
+/* Saved selection highlight */
+.__dt-highlight {
+  background: #ffeb3b !important;
+  color: #000 !important;
+  padding: 0 2px !important;
+  border-radius: 2px !important;
+}
