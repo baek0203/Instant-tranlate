@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "__MSG_extName__",
-  "version": "1.4.4",
+  "version": "1.5.0",
   "description": "__MSG_extDescription__",
   "default_locale": "en",
   "permissions": [
@@ -17,7 +17,16 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["src/shared/i18n.js", "src/content.js"],
+      "js": [
+        "src/shared/i18n.js",
+        "src/content/highlight.js",
+        "src/content/translate.js",
+        "src/content/save.js",
+        "src/content/button.js",
+        "src/content/popup.js",
+        "src/content/deeplink.js",
+        "src/content.js"
+      ],
       "css": ["src/styles.css"],
       "run_at": "document_end"
     }

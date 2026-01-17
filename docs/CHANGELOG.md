@@ -5,6 +5,43 @@ All notable changes to DragTranslator will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0] - 2026-01-17
+
+### Added
+- **딥링크 하이라이트 기능**: 저장된 번역 클릭 시 해당 페이지로 이동하여 원본 텍스트를 자동으로 선택/하이라이트
+- **Selection API 기반 하이라이트**: DOM 수정 없이 브라우저 기본 선택 스타일로 텍스트 강조
+- **Jest 테스트 환경**: 유닛 테스트 인프라 구축 (config, i18n, storage 모듈 테스트)
+
+### Changed
+- **코드 리팩토링**: 전체 코드베이스 모듈화
+  - `src/` 폴더 구조로 재구성
+  - 설정 상수를 `config.js`로 분리
+  - UI 컴포넌트 분리 (`ui/button.js`, `ui/popup.js`)
+  - 스토리지 로직 분리 (`modules/storage.js`)
+  - 공유 모듈 분리 (`shared/i18n.js`, `shared/settings-store.js`, `shared/translation-store.js`)
+- **CSS 캡슐화**: `__dt-` prefix 적용으로 호스트 페이지 스타일 충돌 방지
+- **z-index 최대화**: `2147483647` (최대값) 적용으로 항상 최상단 표시
+- **`!important` 적용**: 호스트 페이지 CSS 오버라이드 방지
+- **LANGUAGES 상수 통합**: `i18n.js`에서 단일 정의로 중복 제거
+
+### Technical Details
+- 딥링크 URL 형식: `https://example.com#dt-id=<번역ID>`
+- Selection API로 4초간 텍스트 선택 후 자동 해제
+- 테스트 실행: `npm test`, `npm run test:coverage`
+
+### Files Structure
+```
+src/
+├── background.js        # 서비스 워커
+├── content.js           # 콘텐츠 스크립트
+├── styles.css           # 콘텐츠 스타일
+├── popup/               # 팝업 UI 모듈
+├── settings/            # 설정 페이지 모듈
+└── shared/              # 공유 모듈
+```
+
+---
+
 ## [1.4.2] - 2026-01-11
 
 ### Fixed
@@ -112,7 +149,7 @@ None in this version.
 
 ## Future Roadmap
 
-### Version 1.5.0 (Planned)
+### Version 1.6.0 (Planned)
 - [ ] Offline translation support
 - [ ] Custom translation API selection
 - [ ] Keyboard shortcuts
@@ -136,4 +173,4 @@ None in this version.
 
 ---
 
-**Last Updated**: 2026-01-11
+**Last Updated**: 2026-01-17

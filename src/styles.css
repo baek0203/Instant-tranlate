@@ -143,10 +143,4 @@
   color: #ffffff;
 }
 
-/* Saved selection highlight */
-.__dt-highlight {
-  background: #ffeb3b !important;
-  color: #000 !important;
-  padding: 0 2px !important;
-  border-radius: 2px !important;
-}
+/* 딥링크 하이라이트는 Selection API 사용 (브라우저 기본 선택 스타일) */
