@@ -1,6 +1,6 @@
 {
   "extName": {
-    "message": "Text Translator",
+    "message": "Instant Translate",
     "description": "Extension name"
   },
   "extDescription": {
@@ -194,5 +194,109 @@
   "viewTranslationHistory": {
     "message": "View Translation History",
     "description": "View translation history link"
+  },
+  "vocabulary": {
+    "message": "Vocabulary",
+    "description": "Vocabulary tab"
+  },
+  "wordsAndPhrases": {
+    "message": "Words & Phrases",
+    "description": "Words section title"
+  },
+  "sentences": {
+    "message": "Sentences",
+    "description": "Sentences section title"
+  },
+  "noWordsStored": {
+    "message": "No words stored",
+    "description": "Empty words message"
+  },
+  "noSentencesStored": {
+    "message": "No sentences stored",
+    "description": "Empty sentences message"
+  },
+  "translationSettings": {
+    "message": "Translation",
+    "description": "Translation settings section"
+  },
+  "targetLanguage": {
+    "message": "Target language",
+    "description": "Target language setting"
+  },
+  "targetLanguageDesc": {
+    "message": "Select the default target language for translation.",
+    "description": "Target language description"
+  },
+  "secondLanguage": {
+    "message": "Second language",
+    "description": "Second language setting"
+  },
+  "secondLanguageDesc": {
+    "message": "Select the second target language.",
+    "description": "Second language description"
+  },
+  "appearance": {
+    "message": "Appearance",
+    "description": "Appearance settings section"
+  },
+  "uiLanguage": {
+    "message": "Interface language",
+    "description": "UI language setting"
+  },
+  "uiLanguageDesc": {
+    "message": "Select the language for the extension interface.",
+    "description": "UI language description"
+  },
+  "theme": {
+    "message": "Theme",
+    "description": "Theme setting"
+  },
+  "themeDesc": {
+    "message": "Choose your preferred color theme.",
+    "description": "Theme description"
+  },
+  "themeAuto": {
+    "message": "Auto (System)",
+    "description": "Auto theme option"
+  },
+  "themeLight": {
+    "message": "Light",
+    "description": "Light theme option"
+  },
+  "themeDark": {
+    "message": "Dark",
+    "description": "Dark theme option"
+  },
+  "about": {
+    "message": "About",
+    "description": "About section"
+  },
+  "support": {
+    "message": "Support",
+    "description": "Support section"
+  },
+  "contactDesc": {
+    "message": "Have questions, suggestions, or found a bug? Let us know!",
+    "description": "Contact description"
+  },
+  "reloadToApply": {
+    "message": "Reload page to apply language change?",
+    "description": "Reload prompt for language change"
+  },
+  "deleted": {
+    "message": "Deleted",
+    "description": "Deleted toast message"
+  },
+  "exported": {
+    "message": "Exported!",
+    "description": "Exported toast message"
+  },
+  "fontSize": {
+    "message": "Font size",
+    "description": "Font size setting"
+  },
+  "fontSizeDesc": {
+    "message": "Adjust the vocabulary text size.",
+    "description": "Font size description"
   }
 }

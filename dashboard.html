@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Instant Translate</title>
+  <link rel="stylesheet" href="src/dashboard/dashboard.css">
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="logo">
+        <img src="icons/icon48.png" alt="Logo">
+        <span>Instant Translate</span>
+      </div>
+
+      <nav class="nav">
+        <a href="#vocabulary" class="nav-item active" data-tab="vocabulary">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/>
+          </svg>
+          <span data-i18n="vocabulary">Vocabulary</span>
+        </a>
+        <a href="#settings" class="nav-item" data-tab="settings">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/>
+          </svg>
+          <span data-i18n="settings">Settings</span>
+        </a>
+        <a href="#info" class="nav-item" data-tab="info">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+          </svg>
+          <span data-i18n="info">Information</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+      <h1 class="page-title" data-i18n="vocabulary">Vocabulary</h1>
+
+      <!-- Vocabulary Tab -->
+      <section id="vocabulary-tab" class="tab-content active">
+        <div class="vocabulary-header">
+          <div class="vocabulary-actions">
+            <button class="btn btn-secondary" id="select-btn" data-i18n="select">Select</button>
+            <button class="btn btn-secondary" id="export-btn" data-i18n="export">Export</button>
+          </div>
+        </div>
+
+        <!-- Two Column Layout for Words and Sentences -->
+        <div class="vocabulary-columns">
+          <!-- Words Section (Left) -->
+          <div class="card vocabulary-section">
+            <h2 class="card-title" data-i18n="wordsAndPhrases">Words & Phrases</h2>
+            <div class="vocabulary-list" id="words-list">
+              <!-- Words will be populated by JavaScript -->
+            </div>
+            <div class="empty-state hidden" id="empty-words">
+              <p data-i18n="noWordsStored">No words stored</p>
+            </div>
+          </div>
+
+          <!-- Sentences Section (Right) -->
+          <div class="card vocabulary-section">
+            <h2 class="card-title" data-i18n="sentences">Sentences</h2>
+            <div class="vocabulary-list" id="sentences-list">
+              <!-- Sentences will be populated by JavaScript -->
+            </div>
+            <div class="empty-state hidden" id="empty-sentences">
+              <p data-i18n="noSentencesStored">No sentences stored</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Select Mode Action Bar -->
+        <div class="action-bar hidden" id="action-bar">
+          <span id="selected-count">0 selected</span>
+          <div class="action-buttons">
+            <button class="btn btn-danger" id="delete-selected-btn" data-i18n="delete">Delete</button>
+            <button class="btn btn-secondary" id="cancel-select-btn" data-i18n="cancel">Cancel</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Settings Tab -->
+      <section id="settings-tab" class="tab-content">
+        <div class="card">
+          <h2 class="card-title" data-i18n="translationSettings">Translation</h2>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3 data-i18n="targetLanguage">Target language</h3>
+              <p data-i18n="targetLanguageDesc">Select the default target language for translation.</p>
+            </div>
+            <select id="target-language" class="select">
+              <!-- Options will be populated by JavaScript -->
+            </select>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3 data-i18n="secondLanguage">Second language</h3>
+              <p data-i18n="secondLanguageDesc">Select the second target language.</p>
+            </div>
+            <select id="second-language" class="select">
+              <!-- Options will be populated by JavaScript -->
+            </select>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title" data-i18n="appearance">Appearance</h2>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3 data-i18n="uiLanguage">Interface language</h3>
+              <p data-i18n="uiLanguageDesc">Select the language for the extension interface.</p>
+            </div>
+            <select id="ui-language" class="select">
+              <!-- Options will be populated by JavaScript -->
+            </select>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3 data-i18n="theme">Theme</h3>
+              <p data-i18n="themeDesc">Choose your preferred color theme.</p>
+            </div>
+            <select id="theme-select" class="select">
+              <option value="auto" data-i18n="themeAuto">Auto (System)</option>
+              <option value="light" data-i18n="themeLight">Light</option>
+              <option value="dark" data-i18n="themeDark">Dark</option>
+            </select>
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-info">
+              <h3 data-i18n="fontSize">Font size</h3>
+              <p data-i18n="fontSizeDesc">Adjust the vocabulary text size.</p>
+            </div>
+            <select id="font-size-select" class="select">
+              <option value="14">Small</option>
+              <option value="18" selected>Medium</option>
+              <option value="22">Large</option>
+              <option value="26">Extra Large</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- Information Tab -->
+      <section id="info-tab" class="tab-content">
+        <div class="card">
+          <h2 class="card-title" data-i18n="about">About</h2>
+
+          <div class="info-item">
+            <span class="info-label" data-i18n="name">Name:</span>
+            <span class="info-value">Instant Translate</span>
+          </div>
+
+          <div class="info-item">
+            <span class="info-label" data-i18n="version">Version:</span>
+            <span class="info-value" id="version-value">1.5.0</span>
+          </div>
+
+          <div class="info-item">
+            <span class="info-label" data-i18n="description">Description:</span>
+            <span class="info-value" data-i18n="extDescription">Translation button appears when you drag text</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title" data-i18n="support">Support</h2>
+          <p class="contact-desc" data-i18n="contactDesc">Have questions, suggestions, or found a bug? Let us know!</p>
+          <a href="https://forms.gle/r37L1EHmyJEqQNg96" target="_blank" class="btn btn-primary" id="contact-btn" data-i18n="contactUs">Contact Us</a>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast hidden" id="toast">
+    <span id="toast-message"></span>
+  </div>
+
+  <!-- Scripts -->
+  <script src="src/shared/i18n.js"></script>
+  <script src="src/shared/settings-store.js"></script>
+  <script src="src/shared/translation-store.js"></script>
+  <script src="src/dashboard/core/utils.js"></script>
+  <script src="src/dashboard/core/navigation.js"></script>
+  <script src="src/dashboard/core/theme.js"></script>
+  <script src="src/dashboard/vocabulary/vocabulary.js"></script>
+  <script src="src/dashboard/settings/settings.js"></script>
+  <script src="src/dashboard/info/info.js"></script>
+  <script src="src/dashboard/dashboard.js"></script>
+</body>
+</html>

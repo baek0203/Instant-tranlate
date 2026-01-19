@@ -68,72 +68,7 @@ async function translateText(text, targetLang, sourceLang = 'auto', retryCount =
   }
 }
 
-// 대체 번역 API (MyMemory)
-async function translateWithMyMemory(text, targetLang, sourceLang = 'auto') {
-  try {
-    const langPair = sourceLang === 'auto' ? `autodetect|${targetLang}` : `${sourceLang}|${targetLang}`;
-    const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${langPair}`;
-
-    const response = await fetch(url);
-    const data = await response.json();
-
-    if (data.responseStatus === 200 && data.responseData) {
-      return {
-        success: true,
-        translatedText: data.responseData.translatedText,
-        detectedLanguage: sourceLang
-      };
-    } else {
-      throw new Error('MyMemory translation failed');
-    }
-  } catch (error) {
-    console.error('MyMemory translation error:', error);
-    return {
-      success: false,
-      error: error.message
-    };
-  }
-}
-
-// LibreTranslate API 사용 (옵션)
-async function translateWithLibre(text, targetLang, sourceLang = 'auto') {
-  try {
-    const url = 'https://libretranslate.de/translate';
-
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        q: text,
-        source: sourceLang,
-        target: targetLang,
-        format: 'text'
-      })
-    });
-
-    const data = await response.json();
-
-    if (data.translatedText) {
-      return {
-        success: true,
-        translatedText: data.translatedText,
-        detectedLanguage: sourceLang
-      };
-    } else {
-      throw new Error('LibreTranslate translation failed');
-    }
-  } catch (error) {
-    console.error('LibreTranslate error:', error);
-    return {
-      success: false,
-      error: error.message
-    };
-  }
-}
-
-// 언어 코드 변환 (필요시)
+// 언어 코드 변환
 function convertLanguageCode(lang) {
   const langMap = {
     'ko': 'ko',
@@ -241,6 +176,14 @@ async function injectContentScriptToAllTabs() {
     console.error('Failed to inject content scripts:', error);
   }
 }
+
+// 확장 프로그램 아이콘 클릭 시 대시보드 열기
+chrome.action.onClicked.addListener(() => {
+  chrome.tabs.create({ url: chrome.runtime.getURL('dashboard.html') });
+});
+
+// 확장 프로그램 삭제 시 피드백 폼 열기
+chrome.runtime.setUninstallURL('https://forms.gle/r37L1EHmyJEqQNg96');
 
 // 확장 프로그램 설치/업데이트 시
 chrome.runtime.onInstalled.addListener(async (details) => {

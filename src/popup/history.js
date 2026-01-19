@@ -179,31 +179,38 @@ const PopupHistory = {
     }
   },
 
-  async deleteTranslation(id) {
-    const uiTexts = PopupI18n.getTexts();
-    if (!confirm(uiTexts.confirmDelete || 'Delete this translation?')) {
-      return;
+  getFeedbackUrl() {
+    const lang = PopupI18n.currentLang || 'en';
+    if (lang === 'ko') {
+      return 'https://forms.gle/GSSTYqdVzg5zF4qc9';
     }
+    return 'https://forms.gle/r37L1EHmyJEqQNg96';
+  },
 
+  showFeedbackToast() {
+    const toast = document.getElementById('feedback-toast');
+    const link = document.getElementById('feedback-toast-link');
+    link.href = this.getFeedbackUrl();
+    toast.classList.remove('hidden');
+
+    setTimeout(() => {
+      toast.classList.add('hidden');
+    }, 5000);
+  },
+
+  async deleteTranslation(id) {
     const success = await TranslationStore.deleteById(id);
     if (success) {
       this.load();
-    } else {
-      alert(uiTexts.deleteFailed || 'Failed to delete');
+      this.showFeedbackToast();
     }
   },
 
   async clearAllTranslations() {
-    const uiTexts = PopupI18n.getTexts();
-    if (!confirm(uiTexts.confirmDeleteAll || 'Delete all translations?')) {
-      return;
-    }
-
     const success = await TranslationStore.clear();
     if (success) {
       this.load();
-    } else {
-      alert(uiTexts.deleteFailed || 'Failed to delete');
+      this.showFeedbackToast();
     }
   },
 
@@ -301,18 +308,12 @@ const PopupHistory = {
   async deleteSelected() {
     if (PopupState.selectedIds.size === 0) return;
 
-    if (!confirm(chrome.i18n.getMessage('confirmDeleteSelected', [PopupState.selectedIds.size.toString()]))) {
-      return;
-    }
-
     const success = await TranslationStore.deleteByIds(PopupState.selectedIds);
-    if (!success) {
-      alert(chrome.i18n.getMessage('deleteFailed'));
-      return;
+    if (success) {
+      PopupState.selectedIds.clear();
+      this.load();
+      this.updateActionBar();
+      this.showFeedbackToast();
     }
-
-    PopupState.selectedIds.clear();
-    await this.load();
-    this.updateActionBar();
   }
 };

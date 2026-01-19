@@ -1,6 +1,6 @@
 {
   "extName": {
-    "message": "DragTranslator",
+    "message": "Instant Translate",
     "description": "Extension name"
   },
   "extDescription": {
@@ -194,5 +194,109 @@
   "viewTranslationHistory": {
     "message": "번역 기록 보기",
     "description": "View translation history link"
+  },
+  "vocabulary": {
+    "message": "단어장",
+    "description": "Vocabulary tab"
+  },
+  "wordsAndPhrases": {
+    "message": "단어 및 표현",
+    "description": "Words section title"
+  },
+  "sentences": {
+    "message": "문장",
+    "description": "Sentences section title"
+  },
+  "noWordsStored": {
+    "message": "저장된 단어가 없습니다",
+    "description": "Empty words message"
+  },
+  "noSentencesStored": {
+    "message": "저장된 문장이 없습니다",
+    "description": "Empty sentences message"
+  },
+  "translationSettings": {
+    "message": "번역",
+    "description": "Translation settings section"
+  },
+  "targetLanguage": {
+    "message": "번역 대상 언어",
+    "description": "Target language setting"
+  },
+  "targetLanguageDesc": {
+    "message": "번역할 기본 대상 언어를 선택하세요.",
+    "description": "Target language description"
+  },
+  "secondLanguage": {
+    "message": "보조 언어",
+    "description": "Second language setting"
+  },
+  "secondLanguageDesc": {
+    "message": "두 번째 대상 언어를 선택하세요.",
+    "description": "Second language description"
+  },
+  "appearance": {
+    "message": "화면",
+    "description": "Appearance settings section"
+  },
+  "uiLanguage": {
+    "message": "인터페이스 언어",
+    "description": "UI language setting"
+  },
+  "uiLanguageDesc": {
+    "message": "확장 프로그램의 표시 언어를 선택하세요.",
+    "description": "UI language description"
+  },
+  "theme": {
+    "message": "테마",
+    "description": "Theme setting"
+  },
+  "themeDesc": {
+    "message": "원하는 색상 테마를 선택하세요.",
+    "description": "Theme description"
+  },
+  "themeAuto": {
+    "message": "자동 (시스템 설정)",
+    "description": "Auto theme option"
+  },
+  "themeLight": {
+    "message": "라이트",
+    "description": "Light theme option"
+  },
+  "themeDark": {
+    "message": "다크",
+    "description": "Dark theme option"
+  },
+  "about": {
+    "message": "정보",
+    "description": "About section"
+  },
+  "support": {
+    "message": "지원",
+    "description": "Support section"
+  },
+  "contactDesc": {
+    "message": "질문, 제안, 버그 발견 시 알려주세요!",
+    "description": "Contact description"
+  },
+  "reloadToApply": {
+    "message": "언어 변경을 적용하려면 페이지를 새로고침하시겠습니까?",
+    "description": "Reload prompt for language change"
+  },
+  "deleted": {
+    "message": "삭제됨",
+    "description": "Deleted toast message"
+  },
+  "exported": {
+    "message": "내보내기 완료!",
+    "description": "Exported toast message"
+  },
+  "fontSize": {
+    "message": "글꼴 크기",
+    "description": "Font size setting"
+  },
+  "fontSizeDesc": {
+    "message": "단어장 텍스트 크기를 조절합니다.",
+    "description": "Font size description"
   }
 }

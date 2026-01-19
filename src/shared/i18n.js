@@ -35,7 +35,9 @@ const UI_TRANSLATIONS = {
     description: '설명:',
     translationFailed: '다시 시도해주세요',
     translationTimeout: '다시 시도해주세요',
-    errorOccurred: '다시 시도해주세요'
+    errorOccurred: '다시 시도해주세요',
+    feedbackToast: '개선에 도움을 주세요!',
+    feedbackLink: '간단 설문하기'
   },
   en: {
     settings: 'Settings',
@@ -68,7 +70,9 @@ const UI_TRANSLATIONS = {
     description: 'Description:',
     translationFailed: 'Please try again',
     translationTimeout: 'Please try again',
-    errorOccurred: 'Please try again'
+    errorOccurred: 'Please try again',
+    feedbackToast: 'Help us improve!',
+    feedbackLink: 'Take a quick survey'
   },
   ja: {
     settings: '設定',
@@ -101,7 +105,9 @@ const UI_TRANSLATIONS = {
     description: '説明:',
     translationFailed: 'もう一度お試しください',
     translationTimeout: 'もう一度お試しください',
-    errorOccurred: 'もう一度お試しください'
+    errorOccurred: 'もう一度お試しください',
+    feedbackToast: '改善にご協力ください！',
+    feedbackLink: '簡単アンケート'
   },
   'zh-CN': {
     settings: '设置',
@@ -134,7 +140,9 @@ const UI_TRANSLATIONS = {
     description: '描述：',
     translationFailed: '请重试',
     translationTimeout: '请重试',
-    errorOccurred: '请重试'
+    errorOccurred: '请重试',
+    feedbackToast: '帮助我们改进！',
+    feedbackLink: '快速问卷'
   },
   es: {
     settings: 'Configuración',
@@ -167,7 +175,9 @@ const UI_TRANSLATIONS = {
     description: 'Descripción:',
     translationFailed: 'Inténtelo de nuevo',
     translationTimeout: 'Inténtelo de nuevo',
-    errorOccurred: 'Inténtelo de nuevo'
+    errorOccurred: 'Inténtelo de nuevo',
+    feedbackToast: '¡Ayúdanos a mejorar!',
+    feedbackLink: 'Encuesta rápida'
   },
   fr: {
     settings: 'Paramètres',
@@ -200,7 +210,9 @@ const UI_TRANSLATIONS = {
     description: 'Description :',
     translationFailed: 'Veuillez réessayer',
     translationTimeout: 'Veuillez réessayer',
-    errorOccurred: 'Veuillez réessayer'
+    errorOccurred: 'Veuillez réessayer',
+    feedbackToast: 'Aidez-nous à améliorer !',
+    feedbackLink: 'Enquête rapide'
   },
   de: {
     settings: 'Einstellungen',
@@ -233,7 +245,9 @@ const UI_TRANSLATIONS = {
     description: 'Beschreibung:',
     translationFailed: 'Bitte versuchen Sie es erneut',
     translationTimeout: 'Bitte versuchen Sie es erneut',
-    errorOccurred: 'Bitte versuchen Sie es erneut'
+    errorOccurred: 'Bitte versuchen Sie es erneut',
+    feedbackToast: 'Helfen Sie uns zu verbessern!',
+    feedbackLink: 'Kurze Umfrage'
   },
   ru: {
     settings: 'Настройки',
@@ -266,7 +280,9 @@ const UI_TRANSLATIONS = {
     description: 'Описание:',
     translationFailed: 'Ошибка перевода',
     translationTimeout: 'Время перевода истекло. Пожалуйста, попробуйте еще раз.',
-    errorOccurred: 'Произошла ошибка'
+    errorOccurred: 'Произошла ошибка',
+    feedbackToast: 'Помогите нам улучшить!',
+    feedbackLink: 'Быстрый опрос'
   },
   pt: {
     settings: 'Configurações',
@@ -299,7 +315,9 @@ const UI_TRANSLATIONS = {
     description: 'Descrição:',
     translationFailed: 'Falha na tradução',
     translationTimeout: 'Tempo limite de tradução. Por favor, tente novamente.',
-    errorOccurred: 'Ocorreu um erro'
+    errorOccurred: 'Ocorreu um erro',
+    feedbackToast: 'Ajude-nos a melhorar!',
+    feedbackLink: 'Pesquisa rápida'
   },
   it: {
     settings: 'Impostazioni',
@@ -332,7 +350,9 @@ const UI_TRANSLATIONS = {
     description: 'Descrizione:',
     translationFailed: 'Traduzione fallita',
     translationTimeout: 'Timeout traduzione. Per favore riprova.',
-    errorOccurred: 'Si è verificato un errore'
+    errorOccurred: 'Si è verificato un errore',
+    feedbackToast: 'Aiutaci a migliorare!',
+    feedbackLink: 'Sondaggio veloce'
   }
 };
 
@@ -354,12 +374,6 @@ function getUILanguage(langCode) {
 
   // 해당 언어가 있으면 사용, 없으면 영어 기본
   return UI_TRANSLATIONS[mappedCode] || UI_TRANSLATIONS['en'];
-}
-
-// 메시지 가져오기
-function getMessage(key, langCode) {
-  const translations = getUILanguage(langCode);
-  return translations[key] || key;
 }
 
 // 지원 언어 목록
@@ -384,11 +398,9 @@ const LANGUAGES = [
 
 
   __dtRoot.getUILanguage = getUILanguage;
-  __dtRoot.getMessage = getMessage;
   __dtRoot.LANGUAGES = LANGUAGES;
 }
 
 // Ensure global bindings exist for legacy scripts.
 var getUILanguage = __dtRoot.getUILanguage;
-var getMessage = __dtRoot.getMessage;
 var LANGUAGES = __dtRoot.LANGUAGES;

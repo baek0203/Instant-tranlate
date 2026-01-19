@@ -24,7 +24,7 @@ build/
 # Chrome extension build artifacts
 *.crx
 *.pem
-*.zip
+zip/
 
 # Backup files
 *.backup
