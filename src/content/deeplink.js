@@ -27,11 +27,17 @@ const Deeplink = {
       const entry = translations.find(item => item.id.toString() === entryId);
       if (!entry || !entry.original) return;
 
-      // 페이지 로드 완료 대기
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // 페이지 로드 완료 대기 (DOM이 완전히 로드될 때까지)
+      if (document.readyState !== 'complete') {
+        await new Promise(resolve => window.addEventListener('load', resolve));
+      }
+      // 추가 대기 (동적 콘텐츠 로드용)
+      await new Promise(resolve => setTimeout(resolve, 800));
 
-      // window.find() API를 사용하여 텍스트 검색
+      // window.find() API를 사용하여 텍스트 검색 (Ctrl+F와 동일)
+      // 이 API는 텍스트를 찾으면 자동으로 해당 위치로 스크롤합니다
       if (window.DT_Highlight.findAndHighlight(entry.original)) {
+        console.log('Deeplink: Found and highlighted text');
         return;
       }
 
@@ -42,6 +48,7 @@ const Deeplink = {
           entry.selectionLength
         );
         if (window.DT_Highlight.addTemporary(range)) {
+          console.log('Deeplink: Used index-based highlighting');
           return;
         }
       }

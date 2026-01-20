@@ -63,6 +63,10 @@
     "message": "전체선택",
     "description": "Select all button"
   },
+  "deselectAll": {
+    "message": "선택해제",
+    "description": "Deselect all button"
+  },
   "deleteAll": {
     "message": "전체삭제",
     "description": "Delete all button"
@@ -298,5 +302,13 @@
   "fontSizeDesc": {
     "message": "단어장 텍스트 크기를 조절합니다.",
     "description": "Font size description"
+  },
+  "changesDiscarded": {
+    "message": "변경 사항 취소됨",
+    "description": "Toast message when settings changes are cancelled"
+  },
+  "saveSettings": {
+    "message": "설정 저장",
+    "description": "Save settings button"
   }
 }

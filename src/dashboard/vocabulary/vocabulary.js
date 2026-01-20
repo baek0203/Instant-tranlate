@@ -4,6 +4,15 @@ const Vocabulary = {
   selectMode: false,
   selectedIds: new Set(),
 
+  // Font size levels: S, M, L, XL
+  FONT_SIZES: [
+    { label: 'S', value: 14 },
+    { label: 'M', value: 18 },
+    { label: 'L', value: 22 },
+    { label: 'XL', value: 26 }
+  ],
+  currentFontSizeIndex: 1, // Default: M (18px)
+
   init() {
     this.wordsList = document.getElementById('words-list');
     this.sentencesList = document.getElementById('sentences-list');
@@ -11,14 +20,67 @@ const Vocabulary = {
     this.emptySentences = document.getElementById('empty-sentences');
     this.actionBar = document.getElementById('action-bar');
     this.selectedCountEl = document.getElementById('selected-count');
+    this.fontSizeLabel = document.getElementById('font-size-label');
 
+    this.loadFontSize();
     this.bindEvents();
     this.render();
+  },
+
+  async loadFontSize() {
+    try {
+      const result = await chrome.storage.sync.get(['fontSize']);
+      if (result.fontSize) {
+        const index = this.FONT_SIZES.findIndex(f => f.value === parseInt(result.fontSize));
+        if (index !== -1) {
+          this.currentFontSizeIndex = index;
+        }
+      }
+      this.applyFontSize();
+    } catch (error) {
+      console.error('Failed to load font size:', error);
+    }
+  },
+
+  applyFontSize() {
+    const size = this.FONT_SIZES[this.currentFontSizeIndex];
+    document.documentElement.style.setProperty('--vocab-font-size', `${size.value}px`);
+    if (this.fontSizeLabel) {
+      this.fontSizeLabel.textContent = size.label;
+    }
+  },
+
+  async saveFontSize() {
+    try {
+      const size = this.FONT_SIZES[this.currentFontSizeIndex];
+      await chrome.storage.sync.set({ fontSize: size.value.toString() });
+    } catch (error) {
+      console.error('Failed to save font size:', error);
+    }
+  },
+
+  increaseFontSize() {
+    if (this.currentFontSizeIndex < this.FONT_SIZES.length - 1) {
+      this.currentFontSizeIndex++;
+      this.applyFontSize();
+      this.saveFontSize();
+    }
+  },
+
+  decreaseFontSize() {
+    if (this.currentFontSizeIndex > 0) {
+      this.currentFontSizeIndex--;
+      this.applyFontSize();
+      this.saveFontSize();
+    }
   },
 
   bindEvents() {
     // Select button
     document.getElementById('select-btn')?.addEventListener('click', () => this.toggleSelectMode());
+
+    // Select all button
+    document.getElementById('select-all-btn')?.addEventListener('click', () => this.toggleSelectAll());
 
     // Export button
     document.getElementById('export-btn')?.addEventListener('click', () => this.exportVocabulary());
@@ -28,6 +90,10 @@ const Vocabulary = {
 
     // Delete selected
     document.getElementById('delete-selected-btn')?.addEventListener('click', () => this.deleteSelected());
+
+    // Font size controls
+    document.getElementById('font-increase')?.addEventListener('click', () => this.increaseFontSize());
+    document.getElementById('font-decrease')?.addEventListener('click', () => this.decreaseFontSize());
 
     // Listen for storage changes to update in real-time
     chrome.storage.onChanged.addListener((changes, area) => {
@@ -65,12 +131,35 @@ const Vocabulary = {
     this.attachItemListeners(listEl);
   },
 
+  // Build deep link URL (same as PopupHistory.buildDeepLink)
+  buildDeepLink(url, id) {
+    if (!url || !id) return null;
+    try {
+      const urlObj = new URL(url);
+      const hash = urlObj.hash.replace(/^#/, '');
+      if (!hash) {
+        urlObj.hash = `dt-id=${id}`;
+      } else if (hash.includes('dt-id=')) {
+        const params = new URLSearchParams(hash);
+        params.set('dt-id', id);
+        urlObj.hash = params.toString();
+      } else {
+        urlObj.hash = `${hash}&dt-id=${id}`;
+      }
+      return urlObj.toString();
+    } catch (error) {
+      console.error('Failed to build deep link:', error);
+      return url;
+    }
+  },
+
   renderItem(item) {
     const { escapeHtml, formatDate, getDomain, getMessage } = DashboardUtils;
     const isSelected = this.selectedIds.has(item.id);
 
-    // Generate deeplink URL if source URL exists
-    const deeplinkUrl = item.url ? `${item.url}#dt-id=${item.id}` : null;
+    // Use pageUrl (history.js data structure) - this is where the text was found
+    const sourceUrl = item.pageUrl;
+    const pageTitle = item.pageTitle || (sourceUrl ? getDomain(sourceUrl) : '');
 
     const itemContent = `
       <div class="vocabulary-item ${isSelected ? 'selected' : ''}" data-id="${item.id}">
@@ -85,13 +174,13 @@ const Vocabulary = {
           <div class="vocab-translated">${escapeHtml(item.translated)}</div>
           <div class="vocab-meta">
             <span class="vocab-date">${formatDate(item.timestamp)}</span>
-            ${item.url ? `
-              <a href="${escapeHtml(item.url)}" target="_blank" class="vocab-source-link" onclick="event.stopPropagation();">
-                ${getDomain(item.url)}
+            ${sourceUrl ? `
+              <button class="vocab-source-link" data-url="${escapeHtml(sourceUrl)}" data-id="${item.id}">
+                ${escapeHtml(pageTitle)}
                 <svg viewBox="0 0 24 24" fill="currentColor">
                   <path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/>
                 </svg>
-              </a>
+              </button>
             ` : ''}
           </div>
         </div>
@@ -112,11 +201,6 @@ const Vocabulary = {
       </div>
     `;
 
-    // Wrap in deeplink anchor if not in select mode and URL exists
-    if (!this.selectMode && deeplinkUrl) {
-      return `<a href="${escapeHtml(deeplinkUrl)}" target="_blank" class="vocab-item-link">${itemContent}</a>`;
-    }
-
     return itemContent;
   },
 
@@ -127,10 +211,28 @@ const Vocabulary = {
       });
     } else {
       listEl.querySelectorAll('.btn-copy').forEach(btn => {
-        btn.addEventListener('click', () => DashboardUtils.copyToClipboard(btn.dataset.text));
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          DashboardUtils.copyToClipboard(btn.dataset.text);
+        });
       });
       listEl.querySelectorAll('.btn-delete').forEach(btn => {
-        btn.addEventListener('click', () => this.deleteItem(btn.dataset.id));
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.deleteItem(btn.dataset.id);
+        });
+      });
+      // Source link click - open deeplink in new tab
+      listEl.querySelectorAll('.vocab-source-link').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const url = btn.dataset.url;
+          const id = btn.dataset.id;
+          const deepLink = this.buildDeepLink(url, id);
+          if (deepLink) {
+            chrome.tabs.create({ url: deepLink });
+          }
+        });
       });
     }
   },
@@ -140,13 +242,34 @@ const Vocabulary = {
     this.selectedIds.clear();
 
     const selectBtn = document.getElementById('select-btn');
+    const selectAllBtn = document.getElementById('select-all-btn');
 
     if (this.selectMode) {
       this.actionBar?.classList.remove('hidden');
+      selectAllBtn?.classList.remove('hidden');
       if (selectBtn) selectBtn.textContent = DashboardUtils.getMessage('cancel') || 'Cancel';
     } else {
       this.actionBar?.classList.add('hidden');
+      selectAllBtn?.classList.add('hidden');
       if (selectBtn) selectBtn.textContent = DashboardUtils.getMessage('select') || 'Select';
+    }
+
+    this.updateSelectedCount();
+    this.render();
+  },
+
+  async toggleSelectAll() {
+    const translations = await TranslationStore.getAll();
+    const allIds = translations.map(item => item.id);
+    const selectAllBtn = document.getElementById('select-all-btn');
+
+    // If all are selected, deselect all; otherwise select all
+    if (this.selectedIds.size === allIds.length && allIds.length > 0) {
+      this.selectedIds.clear();
+      if (selectAllBtn) selectAllBtn.textContent = DashboardUtils.getMessage('selectAll') || 'Select All';
+    } else {
+      allIds.forEach(id => this.selectedIds.add(id));
+      if (selectAllBtn) selectAllBtn.textContent = DashboardUtils.getMessage('deselectAll') || 'Deselect All';
     }
 
     this.updateSelectedCount();

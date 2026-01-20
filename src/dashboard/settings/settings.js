@@ -32,12 +32,18 @@ const Settings = {
     { code: 'de', name: 'Deutsch' }
   ],
 
+  // Original settings (for cancel functionality)
+  originalSettings: {},
+  // Track if settings have changed
+  hasChanges: false,
+
   init() {
     this.targetLangSelect = document.getElementById('target-language');
     this.secondLangSelect = document.getElementById('second-language');
     this.uiLangSelect = document.getElementById('ui-language');
     this.themeSelect = document.getElementById('theme-select');
-    this.fontSizeSelect = document.getElementById('font-size-select');
+    this.saveBtn = document.getElementById('settings-save-btn');
+    this.cancelBtn = document.getElementById('settings-cancel-btn');
 
     this.populateSelects();
     this.loadSettings();
@@ -69,112 +75,150 @@ const Settings = {
         'targetLanguage',
         'secondLanguage',
         'uiLanguage',
-        'theme',
-        'fontSize'
+        'theme'
       ]);
 
+      // Store original values
+      this.originalSettings = {
+        targetLanguage: result.targetLanguage || 'ko',
+        secondLanguage: result.secondLanguage || 'en',
+        uiLanguage: result.uiLanguage || 'en',
+        theme: result.theme || 'auto'
+      };
+
+      // Apply to selects
       if (this.targetLangSelect) {
-        this.targetLangSelect.value = result.targetLanguage || 'ko';
+        this.targetLangSelect.value = this.originalSettings.targetLanguage;
       }
       if (this.secondLangSelect) {
-        this.secondLangSelect.value = result.secondLanguage || 'en';
+        this.secondLangSelect.value = this.originalSettings.secondLanguage;
       }
       if (this.uiLangSelect) {
-        this.uiLangSelect.value = result.uiLanguage || 'en';
+        this.uiLangSelect.value = this.originalSettings.uiLanguage;
       }
       if (this.themeSelect) {
-        this.themeSelect.value = result.theme || 'auto';
+        this.themeSelect.value = this.originalSettings.theme;
       }
-      if (this.fontSizeSelect) {
-        const fontSize = result.fontSize || '18';
-        this.fontSizeSelect.value = fontSize;
-        this.applyFontSize(fontSize);
-      }
+
+      this.hasChanges = false;
+      this.updateButtonStates();
     } catch (error) {
       console.error('Failed to load settings:', error);
     }
   },
 
   bindEvents() {
-    // Auto-save on change
-    this.targetLangSelect?.addEventListener('change', () => this.saveTargetLanguage());
-    this.secondLangSelect?.addEventListener('change', () => this.saveSecondLanguage());
-    this.uiLangSelect?.addEventListener('change', () => this.saveUiLanguage());
-    this.themeSelect?.addEventListener('change', () => this.saveTheme());
-    this.fontSizeSelect?.addEventListener('change', () => this.saveFontSize());
+    // Track changes on all selects
+    this.targetLangSelect?.addEventListener('change', () => this.onSettingChange());
+    this.secondLangSelect?.addEventListener('change', () => this.onSettingChange());
+    this.uiLangSelect?.addEventListener('change', () => this.onSettingChange());
+    this.themeSelect?.addEventListener('change', () => this.onSettingChange());
+
+    // Save button
+    this.saveBtn?.addEventListener('click', () => this.saveSettings());
+
+    // Cancel button
+    this.cancelBtn?.addEventListener('click', () => this.cancelChanges());
   },
 
-  async saveTargetLanguage() {
-    const value = this.targetLangSelect?.value;
-    if (!value) return;
+  onSettingChange() {
+    // Check if any value differs from original
+    const currentSettings = this.getCurrentSettings();
+    this.hasChanges =
+      currentSettings.targetLanguage !== this.originalSettings.targetLanguage ||
+      currentSettings.secondLanguage !== this.originalSettings.secondLanguage ||
+      currentSettings.uiLanguage !== this.originalSettings.uiLanguage ||
+      currentSettings.theme !== this.originalSettings.theme;
 
-    try {
-      await chrome.storage.sync.set({ targetLanguage: value });
-      DashboardUtils.showToast(DashboardUtils.getMessage('settingsSaved') || 'Settings saved');
-    } catch (error) {
-      console.error('Failed to save target language:', error);
+    this.updateButtonStates();
+
+    // Preview theme change immediately
+    if (currentSettings.theme !== this.originalSettings.theme) {
+      Theme.applyTheme(currentSettings.theme);
     }
   },
 
-  async saveSecondLanguage() {
-    const value = this.secondLangSelect?.value;
-    if (!value) return;
+  getCurrentSettings() {
+    return {
+      targetLanguage: this.targetLangSelect?.value || 'ko',
+      secondLanguage: this.secondLangSelect?.value || 'en',
+      uiLanguage: this.uiLangSelect?.value || 'en',
+      theme: this.themeSelect?.value || 'auto'
+    };
+  },
 
-    try {
-      await chrome.storage.sync.set({ secondLanguage: value });
-      DashboardUtils.showToast(DashboardUtils.getMessage('settingsSaved') || 'Settings saved');
-    } catch (error) {
-      console.error('Failed to save second language:', error);
+  updateButtonStates() {
+    if (this.saveBtn) {
+      this.saveBtn.disabled = !this.hasChanges;
+    }
+    if (this.cancelBtn) {
+      this.cancelBtn.disabled = !this.hasChanges;
     }
   },
 
-  async saveUiLanguage() {
-    const value = this.uiLangSelect?.value;
-    if (!value) return;
+  async saveSettings() {
+    if (!this.hasChanges) return;
+
+    const currentSettings = this.getCurrentSettings();
+    const uiLanguageChanged = currentSettings.uiLanguage !== this.originalSettings.uiLanguage;
 
     try {
-      await chrome.storage.sync.set({ uiLanguage: value });
+      // Save all settings
+      await chrome.storage.sync.set({
+        targetLanguage: currentSettings.targetLanguage,
+        secondLanguage: currentSettings.secondLanguage,
+        uiLanguage: currentSettings.uiLanguage,
+        theme: currentSettings.theme
+      });
+
+      // Apply theme
+      await Theme.setTheme(currentSettings.theme);
+
+      // Update original settings
+      this.originalSettings = { ...currentSettings };
+      this.hasChanges = false;
+      this.updateButtonStates();
+
       DashboardUtils.showToast(DashboardUtils.getMessage('settingsSaved') || 'Settings saved');
 
-      // Note: Full UI language change would require page reload
-      // For now, just save the preference
-      setTimeout(() => {
-        if (confirm(DashboardUtils.getMessage('reloadToApply') || 'Reload page to apply language change?')) {
-          window.location.reload();
-        }
-      }, 500);
+      // If UI language changed, prompt to reload
+      if (uiLanguageChanged) {
+        setTimeout(() => {
+          if (confirm(DashboardUtils.getMessage('reloadToApply') || 'Reload page to apply language change?')) {
+            window.location.reload();
+          }
+        }, 500);
+      }
     } catch (error) {
-      console.error('Failed to save UI language:', error);
+      console.error('Failed to save settings:', error);
+      DashboardUtils.showToast('Failed to save settings');
     }
   },
 
-  async saveTheme() {
-    const value = this.themeSelect?.value;
-    if (!value) return;
+  cancelChanges() {
+    if (!this.hasChanges) return;
 
-    try {
-      await Theme.setTheme(value);
-      DashboardUtils.showToast(DashboardUtils.getMessage('settingsSaved') || 'Settings saved');
-    } catch (error) {
-      console.error('Failed to save theme:', error);
+    // Restore original values
+    if (this.targetLangSelect) {
+      this.targetLangSelect.value = this.originalSettings.targetLanguage;
     }
-  },
-
-  async saveFontSize() {
-    const value = this.fontSizeSelect?.value;
-    if (!value) return;
-
-    try {
-      await chrome.storage.sync.set({ fontSize: value });
-      this.applyFontSize(value);
-      DashboardUtils.showToast(DashboardUtils.getMessage('settingsSaved') || 'Settings saved');
-    } catch (error) {
-      console.error('Failed to save font size:', error);
+    if (this.secondLangSelect) {
+      this.secondLangSelect.value = this.originalSettings.secondLanguage;
     }
-  },
+    if (this.uiLangSelect) {
+      this.uiLangSelect.value = this.originalSettings.uiLanguage;
+    }
+    if (this.themeSelect) {
+      this.themeSelect.value = this.originalSettings.theme;
+    }
 
-  applyFontSize(size) {
-    document.documentElement.style.setProperty('--vocab-font-size', `${size}px`);
+    // Restore theme
+    Theme.applyTheme(this.originalSettings.theme);
+
+    this.hasChanges = false;
+    this.updateButtonStates();
+
+    DashboardUtils.showToast(DashboardUtils.getMessage('changesDiscarded') || 'Changes discarded');
   }
 };
 

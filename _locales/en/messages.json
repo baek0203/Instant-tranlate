@@ -63,6 +63,10 @@
     "message": "Select All",
     "description": "Select all button"
   },
+  "deselectAll": {
+    "message": "Deselect All",
+    "description": "Deselect all button"
+  },
   "deleteAll": {
     "message": "Delete All",
     "description": "Delete all button"
@@ -298,5 +302,13 @@
   "fontSizeDesc": {
     "message": "Adjust the vocabulary text size.",
     "description": "Font size description"
+  },
+  "changesDiscarded": {
+    "message": "Changes discarded",
+    "description": "Toast message when settings changes are cancelled"
+  },
+  "saveSettings": {
+    "message": "Save Settings",
+    "description": "Save settings button"
   }
 }
