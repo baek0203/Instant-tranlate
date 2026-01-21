@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-# DragTranslator - Chrome Extension
-=======
 # Instant Translate - Chrome Extension
->>>>>>> 9e207cd1434466f1e77ce6dc6840d064068d5d3d
 
 [한국어](#한국어) | [English](#english)
 
